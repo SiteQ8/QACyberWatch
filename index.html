@@ -12,46 +12,64 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://qacyberwatch.3li.info/">
 <meta name="theme-color" content="#0b0609">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="demo/icon.svg" type="image/svg+xml">
 <style>
-:root{--bg:#0b0609;--bg2:#140a10;--card:#1c0f16;--line:#3a1f2b;--ink:#f3e9ec;--dim:#b9a3ab;--maroon:#8a1538;--maroon2:#b11e4c;--sand:#d9b36b;--ok:#4fcf8f}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#2a0f1d 0%,var(--bg) 55%);color:var(--ink);font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Noto Sans Arabic",sans-serif}
-a{color:var(--sand)}img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
-header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);background:rgba(11,6,9,.85);border-bottom:1px solid var(--line)}
-.nav{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.brand{font-weight:800;letter-spacing:.3px;font-size:1.15rem;color:#fff;text-decoration:none}.brand span{color:var(--sand)}
-.nav a.link{color:var(--dim);text-decoration:none;font-size:.92rem}.nav a.link:hover{color:#fff}
-.spacer{flex:1}.btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--line);color:#fff}
-.btn.primary{background:linear-gradient(135deg,var(--maroon),var(--maroon2));border-color:transparent}.btn.ghost{background:transparent}
-.lang{border:1px solid var(--line);border-radius:999px;padding:4px;display:flex;gap:2px}.lang button{background:transparent;border:0;color:var(--dim);padding:4px 12px;border-radius:999px;cursor:pointer;font-weight:700}.lang button.on{background:var(--maroon);color:#fff}
-main{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
-.hero{padding:56px 0 24px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
-.eyebrow{color:var(--sand);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}
-h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.12;margin:10px 0 14px}h2{font-size:1.7rem;margin:0 0 6px}h3{margin:0 0 6px;font-size:1.05rem}
-.lead{color:var(--dim);font-size:1.08rem;max-width:58ch}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}.stat b{display:block;font-size:1.6rem;color:#fff}.stat span{color:var(--dim);font-size:.85rem}
+:root{--bg:#0b0609;--bg2:#140a10;--card:#1b0e15;--line:#36202b;--ink:#f5edf0;--dim:#bba7ae;--maroon:#8a1538;--maroon2:#b11e4c;--sand:#d9b36b;--font-latin:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--font-arabic:"IBM Plex Sans Arabic","Noto Sans Arabic",system-ui,sans-serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#2a0f1d 0%,var(--bg) 55%);color:var(--ink);font:16px/1.65 var(--font-latin)}
+html[dir="rtl"] body{font-family:var(--font-arabic);line-height:1.85}
+[lang="ar"]{font-family:var(--font-arabic)}
+a{color:var(--sand)}img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
+header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);background:rgba(11,6,9,.9);border-bottom:1px solid var(--line)}
+.nav{max-width:1120px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+.brand{font-weight:800;letter-spacing:.3px;font-size:1.15rem;color:#fff;text-decoration:none;white-space:nowrap;font-family:var(--font-latin)}.brand span{color:var(--sand)}
+.links{display:flex;gap:18px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;padding:4px 0}.links::-webkit-scrollbar{display:none}
+.links a{color:var(--dim);text-decoration:none;font-size:.93rem;white-space:nowrap}.links a:hover{color:#fff}
+.actions{display:flex;align-items:center;gap:10px;margin-inline-start:auto}
+.btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--line);color:#fff;white-space:nowrap;line-height:1.3;text-align:center}
+.btn.primary{background:linear-gradient(135deg,var(--maroon),var(--maroon2));border-color:transparent;box-shadow:0 6px 18px rgba(177,30,76,.25)}.btn.ghost{background:transparent}.btn.sm{padding:8px 12px;font-size:.9rem}
+.lang{border:1px solid var(--line);border-radius:999px;padding:3px;display:flex;gap:2px;background:var(--bg2)}
+.lang button{background:transparent;border:0;color:var(--dim);padding:5px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-family:inherit;font-size:.88rem;line-height:1.4}.lang button.on{background:var(--maroon);color:#fff}
+main{max-width:1120px;margin:0 auto;padding:16px 20px 60px}
+.hero{padding:44px 0 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+.eyebrow{color:var(--sand);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}html[dir="rtl"] .eyebrow{letter-spacing:0;font-size:.95rem}
+h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.12;margin:10px 0 14px;letter-spacing:-.01em}html[dir="rtl"] h1{font-size:clamp(1.85rem,5vw,2.75rem);line-height:1.45;letter-spacing:0;font-weight:700}
+h2{font-size:1.7rem;margin:0 0 6px;letter-spacing:-.01em}html[dir="rtl"] h2{font-size:1.5rem;line-height:1.55;letter-spacing:0}
+h3{margin:0 0 6px;font-size:1.05rem}
+.lead{color:var(--dim);font-size:1.08rem;max-width:58ch}html[dir="rtl"] .lead{font-size:1.04rem;line-height:2}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}.stat b{display:block;font-size:1.6rem;color:#fff;font-family:var(--font-latin);direction:ltr;unicode-bidi:isolate}.stat span{color:var(--dim);font-size:.85rem}
 section{padding:40px 0;border-top:1px solid var(--line)}.sub{color:var(--dim);max-width:70ch;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.card p{color:var(--dim);margin:0;font-size:.95rem}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}.step .n{color:var(--sand);font-weight:800;font-size:.8rem;letter-spacing:.1em}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;transition:border-color .2s,transform .2s}.card:hover{border-color:#5a3042;transform:translateY(-2px)}.card p{color:var(--dim);margin:0;font-size:.95rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}.step .n{color:var(--sand);font-weight:800;font-size:.8rem;letter-spacing:.1em;font-family:var(--font-latin)}.step p{color:var(--dim);margin:0;font-size:.95rem}
 .shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}.shots figure{margin:0}.shots figcaption{color:var(--dim);font-size:.85rem;margin-top:6px}
-pre{background:#080406;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:.88rem;line-height:1.5}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-table{width:100%;border-collapse:collapse;font-size:.93rem}td,th{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}th{color:var(--sand)}
-.notice{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--sand);border-radius:12px;padding:16px;color:var(--dim)}
-footer{border-top:1px solid var(--line);color:var(--dim);font-size:.88rem;padding:24px 20px;text-align:center}
+pre{background:#080406;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:.88rem;line-height:1.5;direction:ltr;text-align:left}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:18px}.spec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}.spec b{display:block;color:var(--sand);font-size:.85rem;margin-bottom:4px}.spec span{color:var(--dim);font-size:.93rem}
+.notice{background:var(--bg2);border:1px solid var(--line);border-inline-start:4px solid var(--sand);border-radius:12px;padding:16px;color:var(--dim)}
+footer{border-top:1px solid var(--line);color:var(--dim);font-size:.88rem;padding:24px 20px;text-align:center;line-height:2}
 [data-lang="ar"]{display:none}html[dir="rtl"] [data-lang="ar"]{display:revert}html[dir="rtl"] [data-lang="en"]{display:none}
-html[dir="rtl"] td,html[dir="rtl"] th{text-align:right}html[dir="rtl"] .notice{border-left:1px solid var(--line);border-right:4px solid var(--sand)}
-@media (max-width:860px){.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.steps,.shots{grid-template-columns:1fr}}
+@media (max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-top:28px}.stats{grid-template-columns:repeat(2,1fr)}.steps,.shots{grid-template-columns:1fr}}
+@media (max-width:720px){.nav{flex-wrap:wrap;row-gap:8px}.links{order:3;flex:1 1 100%;gap:16px;border-top:1px solid var(--line);padding-top:8px}.actions .github,.actions .btn.primary{display:none}.cta .btn{flex:1 1 100%}h1{font-size:2rem}html[dir="rtl"] h1{font-size:1.8rem}}
 </style>
 </head>
 <body>
 <header><div class="nav">
   <a class="brand" href="./">QA<span>CyberWatch</span></a>
-  <a class="link" href="#features" data-lang="en">Features</a><a class="link" href="#how" data-lang="en">How it works</a><a class="link" href="#qatar" data-lang="en">Qatar</a><a class="link" href="#screens" data-lang="en">Screens</a><a class="link" href="#selfhost" data-lang="en">Self-host</a>
-  <a class="link" href="#features" data-lang="ar">المزايا</a><a class="link" href="#how" data-lang="ar">كيف تعمل</a><a class="link" href="#qatar" data-lang="ar">قطر</a><a class="link" href="#screens" data-lang="ar">الشاشات</a><a class="link" href="#selfhost" data-lang="ar">الاستضافة الذاتية</a>
-  <span class="spacer"></span>
-  <div class="lang" role="group" aria-label="Language"><button id="btnEn" class="on" type="button">EN</button><button id="btnAr" type="button">العربية</button></div>
-  <a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch">GitHub</a>
-  <a class="btn primary" href="demo/" data-lang="en">Open the console →</a><a class="btn primary" href="demo/" data-lang="ar">افتح وحدة التحكم</a>
+  <nav class="links" aria-label="Sections">
+    <a href="#features"><span data-lang="en">Features</span><span data-lang="ar">المزايا</span></a>
+    <a href="#how"><span data-lang="en">How it works</span><span data-lang="ar">كيف تعمل</span></a>
+    <a href="#qatar"><span data-lang="en">Qatar</span><span data-lang="ar">قطر</span></a>
+    <a href="#screens"><span data-lang="en">Screens</span><span data-lang="ar">الشاشات</span></a>
+    <a href="#selfhost"><span data-lang="en">Self-host</span><span data-lang="ar">الاستضافة الذاتية</span></a>
+  </nav>
+  <div class="actions">
+    <div class="lang" role="group" aria-label="Language"><button id="btnEn" class="on" type="button" lang="en">EN</button><button id="btnAr" type="button" lang="ar">العربية</button></div>
+    <a class="btn ghost sm github" href="https://github.com/SiteQ8/QACyberWatch">GitHub</a>
+    <a class="btn primary sm" href="demo/"><span data-lang="en">Open the console</span><span data-lang="ar">افتح وحدة التحكم</span></a>
+  </div>
 </div></header>
 <main>
 <div class="hero">
@@ -60,7 +78,7 @@ html[dir="rtl"] td,html[dir="rtl"] th{text-align:right}html[dir="rtl"] .notice{b
     <h1 data-lang="en">Phishing detection and brand protection for the State of Qatar</h1><h1 data-lang="ar">رصد التصيد وحماية العلامات التجارية في دولة قطر</h1>
     <p class="lead" data-lang="en">QACyberWatch reads Certificate Transparency logs the moment certificates are issued, hunts look-alikes of Qatari banks, payment services, telecoms and government services in Latin and Arabic script, and turns every candidate into a triaged alert. No third-party feed. Nothing leaves your browser.</p>
     <p class="lead" data-lang="ar">يقرأ QACyberWatch سجلات شفافية الشهادات لحظة إصدار الشهادة، ويبحث عن النطاقات المشابهة لأسماء البنوك القطرية وخدمات الدفع وشركات الاتصالات والجهات الحكومية بالحروف اللاتينية والعربية، ثم يحوّل كل نطاق مشتبه به إلى تنبيه جاهز للمراجعة من غير الاعتماد على أي مزوّد خارجي ومن غير أن تغادر بياناتك المتصفح.</p>
-    <p><a class="btn primary" href="demo/" data-lang="en">Open the live console</a><a class="btn primary" href="demo/" data-lang="ar">افتح وحدة التحكم المباشرة</a> &nbsp; <a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch" data-lang="en">Source on GitHub</a><a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch" data-lang="ar">المصدر على GitHub</a></p>
+    <div class="cta"><a class="btn primary" href="demo/"><span data-lang="en">Open the live console</span><span data-lang="ar">افتح وحدة التحكم المباشرة</span></a><a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch"><span data-lang="en">Source on GitHub</span><span data-lang="ar">المصدر على GitHub</span></a></div>
     <div class="stats">
       <div class="stat"><b>34</b><span data-lang="en">brand profiles</span><span data-lang="ar">علامة محمية</span></div>
       <div class="stat"><b>94</b><span data-lang="en">Qatar keywords</span><span data-lang="ar">كلمة مفتاحية قطرية</span></div>
@@ -138,14 +156,14 @@ python main.py api            # http://localhost:5000
 
 # or everything at once
 docker compose up -d</code></pre>
-  <table>
-    <tr><th data-lang="en">Engine</th><th data-lang="ar">المحرك</th><td data-lang="en">Python 3.10+, dependency-free X.509 parser, SQLite with migrations</td><td data-lang="ar">Python 3.10 فما فوق مع محلل X.509 بلا اعتماديات وقاعدة SQLite مع ترحيلات</td></tr>
-    <tr><th data-lang="en">CT sources</th><th data-lang="ar">مصادر السجلات</th><td data-lang="en">RFC 6962 and Static CT API logs discovered from Google's log list, every shard that new certificates can land in</td><td data-lang="ar">سجلات RFC 6962 وStatic CT API المكتشفة من قائمة سجلات Google، مع متابعة كل الأجزاء التي قد تصل إليها الشهادات الجديدة</td></tr>
-    <tr><th data-lang="en">Intel</th><th data-lang="ar">الاستخبارات</th><td data-lang="en">OpenPhish and URLhaus out of the box; VirusTotal, URLScan, PhishTank and Google Safe Browsing with a key</td><td data-lang="ar">OpenPhish وURLhaus جاهزان فوراً، ويعمل VirusTotal وURLScan وPhishTank وGoogle Safe Browsing بمفتاح</td></tr>
-    <tr><th data-lang="en">Outputs</th><th data-lang="ar">المخرجات</th><td data-lang="en">STIX 2.1, CSV, Markdown and JSON reports, Prometheus metrics, syslog and CEF</td><td data-lang="ar">STIX 2.1 وCSV وتقارير Markdown وJSON ومقاييس Prometheus وsyslog وCEF</td></tr>
-    <tr><th data-lang="en">API</th><th data-lang="ar">الواجهة البرمجية</th><td data-lang="en">Signed bearer tokens, roles, rate limiting, OpenAPI at <code>/api/v1/docs</code></td><td data-lang="ar">رموز موقّعة وأدوار وتحديد للمعدل وتوثيق OpenAPI على <code>/api/v1/docs</code></td></tr>
-    <tr><th data-lang="en">License</th><th data-lang="ar">الرخصة</th><td data-lang="en">MIT, built by Ali AlEnezi (SiteQ8)</td><td data-lang="ar">MIT من تطوير علي العنزي (SiteQ8)</td></tr>
-  </table>
+  <div class="specs">
+    <div class="spec"><b><span data-lang="en">Engine</span><span data-lang="ar">المحرك</span></b><span><span data-lang="en">Python 3.10+, dependency-free X.509 parser, SQLite with migrations</span><span data-lang="ar">Python 3.10 فما فوق مع محلل X.509 بلا اعتماديات وقاعدة SQLite مع ترحيلات</span></span></div>
+    <div class="spec"><b><span data-lang="en">CT sources</span><span data-lang="ar">مصادر السجلات</span></b><span><span data-lang="en">RFC 6962 and Static CT API logs discovered from Google's log list, every shard that new certificates can land in</span><span data-lang="ar">سجلات RFC 6962 وStatic CT API المكتشفة من قائمة سجلات Google، مع متابعة كل الأجزاء التي قد تصل إليها الشهادات الجديدة</span></span></div>
+    <div class="spec"><b><span data-lang="en">Intel</span><span data-lang="ar">الاستخبارات</span></b><span><span data-lang="en">OpenPhish and URLhaus out of the box; VirusTotal, URLScan, PhishTank and Google Safe Browsing with a key</span><span data-lang="ar">OpenPhish وURLhaus جاهزان فوراً، ويعمل VirusTotal وURLScan وPhishTank وGoogle Safe Browsing بمفتاح</span></span></div>
+    <div class="spec"><b><span data-lang="en">Outputs</span><span data-lang="ar">المخرجات</span></b><span><span data-lang="en">STIX 2.1, CSV, Markdown and JSON reports, Prometheus metrics, syslog and CEF</span><span data-lang="ar">STIX 2.1 وCSV وتقارير Markdown وJSON ومقاييس Prometheus وsyslog وCEF</span></span></div>
+    <div class="spec"><b><span data-lang="en">API</span><span data-lang="ar">الواجهة البرمجية</span></b><span><span data-lang="en">Signed bearer tokens, roles, rate limiting, OpenAPI at <code>/api/v1/docs</code></span><span data-lang="ar">رموز موقّعة وأدوار وتحديد للمعدل وتوثيق OpenAPI على <code>/api/v1/docs</code></span></span></div>
+    <div class="spec"><b><span data-lang="en">License</span><span data-lang="ar">الرخصة</span></b><span><span data-lang="en">MIT, built by Ali AlEnezi (SiteQ8)</span><span data-lang="ar">MIT من تطوير علي العنزي (SiteQ8)</span></span></div>
+  </div>
 </section>
 
 <section id="legal">
