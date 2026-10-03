@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QACyberWatch, phishing detection and brand protection for Qatar</title>
+<meta name="description" content="QACyberWatch: open-source phishing detection and brand protection for the State of Qatar. Live Certificate Transparency tailing, look-alike domain hunting and brand impersonation alerts for Qatari banks, payment services, telecoms and government services, in your browser or self-hosted.">
+<link rel="canonical" href="https://qacyberwatch.3li.info/">
+<meta property="og:title" content="QACyberWatch, phishing detection and brand protection for Qatar">
+<meta property="og:description" content="Live CT log monitoring, look-alike hunting and brand impersonation alerts for Qatar. No third-party feed. Runs in your browser.">
+<meta property="og:image" content="https://qacyberwatch.3li.info/docs/screenshots/02-dashboard.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://qacyberwatch.3li.info/">
+<meta name="theme-color" content="#0b0609">
+<link rel="icon" href="demo/icon.svg" type="image/svg+xml">
+<style>
+:root{--bg:#0b0609;--bg2:#140a10;--card:#1c0f16;--line:#3a1f2b;--ink:#f3e9ec;--dim:#b9a3ab;--maroon:#8a1538;--maroon2:#b11e4c;--sand:#d9b36b;--ok:#4fcf8f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#2a0f1d 0%,var(--bg) 55%);color:var(--ink);font:16px/1.65 "Segoe UI",system-ui,-apple-system,"Noto Sans Arabic",sans-serif}
+a{color:var(--sand)}img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);background:rgba(11,6,9,.85);border-bottom:1px solid var(--line)}
+.nav{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.3px;font-size:1.15rem;color:#fff;text-decoration:none}.brand span{color:var(--sand)}
+.nav a.link{color:var(--dim);text-decoration:none;font-size:.92rem}.nav a.link:hover{color:#fff}
+.spacer{flex:1}.btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--line);color:#fff}
+.btn.primary{background:linear-gradient(135deg,var(--maroon),var(--maroon2));border-color:transparent}.btn.ghost{background:transparent}
+.lang{border:1px solid var(--line);border-radius:999px;padding:4px;display:flex;gap:2px}.lang button{background:transparent;border:0;color:var(--dim);padding:4px 12px;border-radius:999px;cursor:pointer;font-weight:700}.lang button.on{background:var(--maroon);color:#fff}
+main{max-width:1120px;margin:0 auto;padding:24px 20px 60px}
+.hero{padding:56px 0 24px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
+.eyebrow{color:var(--sand);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}
+h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.12;margin:10px 0 14px}h2{font-size:1.7rem;margin:0 0 6px}h3{margin:0 0 6px;font-size:1.05rem}
+.lead{color:var(--dim);font-size:1.08rem;max-width:58ch}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}.stat b{display:block;font-size:1.6rem;color:#fff}.stat span{color:var(--dim);font-size:.85rem}
+section{padding:40px 0;border-top:1px solid var(--line)}.sub{color:var(--dim);max-width:70ch;margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}.card p{color:var(--dim);margin:0;font-size:.95rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}.step .n{color:var(--sand);font-weight:800;font-size:.8rem;letter-spacing:.1em}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}.shots figure{margin:0}.shots figcaption{color:var(--dim);font-size:.85rem;margin-top:6px}
+pre{background:#080406;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:.88rem;line-height:1.5}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+table{width:100%;border-collapse:collapse;font-size:.93rem}td,th{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}th{color:var(--sand)}
+.notice{background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--sand);border-radius:12px;padding:16px;color:var(--dim)}
+footer{border-top:1px solid var(--line);color:var(--dim);font-size:.88rem;padding:24px 20px;text-align:center}
+[data-lang="ar"]{display:none}html[dir="rtl"] [data-lang="ar"]{display:revert}html[dir="rtl"] [data-lang="en"]{display:none}
+html[dir="rtl"] td,html[dir="rtl"] th{text-align:right}html[dir="rtl"] .notice{border-left:1px solid var(--line);border-right:4px solid var(--sand)}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.steps,.shots{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="nav">
+  <a class="brand" href="./">QA<span>CyberWatch</span></a>
+  <a class="link" href="#features" data-lang="en">Features</a><a class="link" href="#how" data-lang="en">How it works</a><a class="link" href="#qatar" data-lang="en">Qatar</a><a class="link" href="#screens" data-lang="en">Screens</a><a class="link" href="#selfhost" data-lang="en">Self-host</a>
+  <a class="link" href="#features" data-lang="ar">المزايا</a><a class="link" href="#how" data-lang="ar">كيف تعمل</a><a class="link" href="#qatar" data-lang="ar">قطر</a><a class="link" href="#screens" data-lang="ar">الشاشات</a><a class="link" href="#selfhost" data-lang="ar">الاستضافة الذاتية</a>
+  <span class="spacer"></span>
+  <div class="lang" role="group" aria-label="Language"><button id="btnEn" class="on" type="button">EN</button><button id="btnAr" type="button">العربية</button></div>
+  <a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch">GitHub</a>
+  <a class="btn primary" href="demo/" data-lang="en">Open the console →</a><a class="btn primary" href="demo/" data-lang="ar">افتح وحدة التحكم</a>
+</div></header>
+<main>
+<div class="hero">
+  <div>
+    <div class="eyebrow" data-lang="en">Live · open source · runs in your browser</div><div class="eyebrow" data-lang="ar">مباشر ومفتوح المصدر ويعمل في متصفحك</div>
+    <h1 data-lang="en">Phishing detection and brand protection for the State of Qatar</h1><h1 data-lang="ar">رصد التصيد وحماية العلامات التجارية في دولة قطر</h1>
+    <p class="lead" data-lang="en">QACyberWatch reads Certificate Transparency logs the moment certificates are issued, hunts look-alikes of Qatari banks, payment services, telecoms and government services in Latin and Arabic script, and turns every candidate into a triaged alert. No third-party feed. Nothing leaves your browser.</p>
+    <p class="lead" data-lang="ar">يقرأ QACyberWatch سجلات شفافية الشهادات لحظة إصدار الشهادة، ويبحث عن النطاقات المشابهة لأسماء البنوك القطرية وخدمات الدفع وشركات الاتصالات والجهات الحكومية بالحروف اللاتينية والعربية، ثم يحوّل كل نطاق مشتبه به إلى تنبيه جاهز للمراجعة من غير الاعتماد على أي مزوّد خارجي ومن غير أن تغادر بياناتك المتصفح.</p>
+    <p><a class="btn primary" href="demo/" data-lang="en">Open the live console</a><a class="btn primary" href="demo/" data-lang="ar">افتح وحدة التحكم المباشرة</a> &nbsp; <a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch" data-lang="en">Source on GitHub</a><a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch" data-lang="ar">المصدر على GitHub</a></p>
+    <div class="stats">
+      <div class="stat"><b>34</b><span data-lang="en">brand profiles</span><span data-lang="ar">علامة محمية</span></div>
+      <div class="stat"><b>94</b><span data-lang="en">Qatar keywords</span><span data-lang="ar">كلمة مفتاحية قطرية</span></div>
+      <div class="stat"><b>2</b><span data-lang="en">CT log APIs</span><span data-lang="ar">واجهتان لسجلات الشهادات</span></div>
+      <div class="stat"><b>450+</b><span data-lang="en">tests</span><span data-lang="ar">اختبار</span></div>
+    </div>
+  </div>
+  <div><img src="docs/screenshots/02-dashboard.png" alt="QACyberWatch dashboard"></div>
+</div>
+
+<section id="qatar">
+  <h2 data-lang="en">A contribution to Qatar's cybersecurity maturity</h2><h2 data-lang="ar">مساهمة في نضج الأمن السيبراني في قطر</h2>
+  <p class="sub" data-lang="en">The sectors that scam campaigns target in Qatar are the sectors this engine knows by name: banks and the Himyan and NAPS payment infrastructure, Ooredoo and Vodafone Qatar, Hukoomi and Metrash, MOPH and HMC, Kahramaa and QatarEnergy, Qatar Airways and Qatar Post, the charities and the universities. The tool is independent and open, so any institution, NCSA, Q-CERT or a sector CERT can audit it, run it and extend it.</p>
+  <p class="sub" data-lang="ar">القطاعات التي تستهدفها حملات الاحتيال في قطر هي القطاعات التي يعرفها هذا المحرك بالاسم، فهو يحمي البنوك وبنية الدفع حميان وNAPS وأوريدو وفودافون قطر وحكومي ومطراش ووزارة الصحة ومؤسسة حمد الطبية وكهرماء وقطر للطاقة والخطوط الجوية القطرية وبريد قطر والجمعيات الخيرية والجامعات، وهو مستقل ومفتوح المصدر ليتمكن أي جهة أو الوكالة الوطنية للأمن السيبراني أو فرق الاستجابة القطاعية من مراجعته وتشغيله وتوسيعه.</p>
+  <div class="grid">
+    <div class="card"><h3 data-lang="en">Early warning</h3><h3 data-lang="ar">إنذار مبكر</h3><p data-lang="en">A look-alike becomes visible when its certificate is issued, often days before any lure reaches a victim.</p><p data-lang="ar">يظهر النطاق المشابه عند إصدار شهادته وغالباً قبل وصول أي رسالة احتيالية إلى الضحية بأيام.</p></div>
+    <div class="card"><h3 data-lang="en">Evidence, not opinions</h3><h3 data-lang="ar">أدلة لا آراء</h3><p data-lang="en">STIX 2.1 bundles, CSV, reports and syslog feed existing SOC tooling and incident records.</p><p data-lang="ar">تُغذّي حزم STIX 2.1 وملفات CSV والتقارير وسجلات syslog أدوات مركز العمليات الأمنية وسجلات الحوادث القائمة.</p></div>
+    <div class="card"><h3 data-lang="en">Arabic by design</h3><h3 data-lang="ar">العربية في الأساس</h3><p data-lang="en">Arabic brand names, Arabic lure words and mixed-script tricks are first-class inputs, not an afterthought.</p><p data-lang="ar">أسماء العلامات بالعربية وكلمات الإغراء العربية وحيل الخلط بين الأحرف مدخلات أساسية في المحرك وليست إضافة لاحقة.</p></div>
+    <div class="card"><h3 data-lang="en">Open to audit</h3><h3 data-lang="ar">قابل للتدقيق</h3><p data-lang="en">MIT licensed, 450+ tests, two engine implementations checked for identical verdicts. <a href="docs/qatar-alignment.md">Read the alignment note</a>.</p><p data-lang="ar">رخصة MIT وأكثر من 450 اختباراً وتطبيقان للمحرك يُفحصان للتأكد من تطابق أحكامهما، <a href="docs/qatar-alignment.md">واقرأ ورقة المواءمة</a>.</p></div>
+  </div>
+</section>
+
+<section id="features">
+  <h2 data-lang="en">Built for analysts, not demos</h2><h2 data-lang="ar">صُمم للمحللين لا للعروض</h2>
+  <p class="sub" data-lang="en">Every number in the console comes from real Certificate Transparency entries, real DNS answers and real registration data. The full detection engine is ported to JavaScript and parity-tested against the Python backend.</p>
+  <p class="sub" data-lang="ar">كل رقم في وحدة التحكم مصدره إدخالات حقيقية من سجلات الشهادات وإجابات DNS حقيقية وبيانات تسجيل حقيقية، وقد نُقل المحرك كاملاً إلى JavaScript واختُبر تطابقه مع الخلفية المكتوبة بلغة Python.</p>
+  <div class="grid">
+    <div class="card"><h3 data-lang="en">Direct CT log tailing</h3><h3 data-lang="ar">قراءة مباشرة لسجلات الشهادات</h3><p data-lang="en">Reads RFC 6962 and Static CT API logs itself, parses every DER certificate with a built-in reader, and reads every shard that newly issued certificates can land in.</p><p data-lang="ar">يقرأ سجلات RFC 6962 وسجلات Static CT API بنفسه ويحلل كل شهادة DER بقارئ مدمج، ويتابع كل الأجزاء التي قد تصل إليها الشهادات الجديدة.</p></div>
+    <div class="card"><h3 data-lang="en">Typosquat Hunter and Watchtower</h3><h3 data-lang="ar">صائد الأخطاء الإملائية وبرج المراقبة</h3><p data-lang="en">Generates typos, homoglyphs, leet, combo-squats and TLD swaps for any brand, resolves them over DNS-over-HTTPS and sweeps protected brands on a schedule.</p><p data-lang="ar">يولّد الأخطاء الإملائية والأحرف المتشابهة والتركيبات وتبديل النطاقات العليا لأي علامة، ثم يحلّها عبر DNS over HTTPS ويمسح العلامات المحمية وفق جدول زمني.</p></div>
+    <div class="card"><h3 data-lang="en">IDN and Arabic aware engine</h3><h3 data-lang="ar">محرك يفهم النطاقات الدولية والعربية</h3><p data-lang="en">Detects Cyrillic homoglyphs, mixed scripts and Arabic lures such as الريان-تحديث, with a character inspector and a look-alike diff for every verdict.</p><p data-lang="ar">يكشف الأحرف السيريلية المتشابهة والخلط بين الأحرف والإغراءات العربية مثل الريان-تحديث، مع فاحص للأحرف ومقارنة بصرية لكل حكم.</p></div>
+    <div class="card"><h3 data-lang="en">Honest scoring</h3><h3 data-lang="ar">تقييم أمين</h3><p data-lang="en">A hosting platform counts once, a leading www is neutral, short keywords stay at label edges, and every finding is a candidate for review.</p><p data-lang="ar">تُحتسب منصة الاستضافة مرة واحدة ولا يؤثر البادئ www في النتيجة وتبقى الكلمات القصيرة عند أطراف التسمية، وكل نتيجة مرشحة للمراجعة لا حكم نهائي.</p></div>
+    <div class="card"><h3 data-lang="en">Alert lifecycle</h3><h3 data-lang="ar">دورة حياة التنبيه</h3><p data-lang="en">Open, investigating, resolved or false positive, with notes, assignee, timeline, bulk triage, one-click allowlisting and consolidation per domain.</p><p data-lang="ar">مفتوح ثم قيد التحقيق ثم مُعالج أو إنذار كاذب، مع ملاحظات ومسؤول وخط زمني وفرز جماعي وإدراج في القائمة الآمنة بنقرة واحدة ودمج التنبيهات لكل نطاق.</p></div>
+    <div class="card"><h3 data-lang="en">Enrichment and exports</h3><h3 data-lang="ar">الإثراء والتصدير</h3><p data-lang="en">DNS-over-HTTPS, crt.sh history, RDAP registration age and URLhaus reputation, then STIX 2.1, CSV, HTML reports and a JSON workspace backup.</p><p data-lang="ar">إثراء عبر DNS over HTTPS وسجل crt.sh وعمر التسجيل من RDAP وسمعة URLhaus، ثم تصدير بصيغ STIX 2.1 وCSV وتقارير HTML ونسخة احتياطية JSON لمساحة العمل.</p></div>
+  </div>
+</section>
+
+<section id="how">
+  <h2 data-lang="en">How it works</h2><h2 data-lang="ar">كيف تعمل</h2>
+  <p class="sub" data-lang="en">Three sources feed one engine. Everything is computed locally, so the console behaves the same on this site and on an analyst's laptop.</p>
+  <p class="sub" data-lang="ar">ثلاثة مصادر تغذي محركاً واحداً، وكل الحسابات تجري محلياً فتتصرف وحدة التحكم على هذا الموقع كما تتصرف على حاسوب المحلل.</p>
+  <div class="steps">
+    <div class="step"><div class="n">01</div><h3 data-lang="en">Discover</h3><h3 data-lang="ar">الاكتشاف</h3><p data-lang="en">Certificates arrive from the logs you tail directly, look-alikes from the hunter and the Watchtower sweep, and anything else from the scanner or the bulk scanner.</p><p data-lang="ar">تصل الشهادات من السجلات التي تقرؤها مباشرة، وتأتي النطاقات المشابهة من الصائد ومسح برج المراقبة، ويمكن لصق أي نطاق آخر في الفاحص أو الفاحص الجماعي.</p></div>
+    <div class="step"><div class="n">02</div><h3 data-lang="en">Detect</h3><h3 data-lang="ar">الكشف</h3><p data-lang="en">The engine parses the registrable domain, folds confusables and leetspeak, normalises Arabic, checks 34 brand profiles and 94 keywords, scores lures, risky TLDs, structure and hosting platforms, then applies your custom rules.</p><p data-lang="ar">يحلل المحرك النطاق القابل للتسجيل ويطوي الأحرف المتشابهة ويوحّد العربية ويفحص 34 علامة و94 كلمة مفتاحية، ثم يقيّم كلمات الإغراء والنطاقات العليا الخطرة والبنية ومنصات الاستضافة ويطبّق قواعدك الخاصة.</p></div>
+    <div class="step"><div class="n">03</div><h3 data-lang="en">Triage</h3><h3 data-lang="ar">الفرز</h3><p data-lang="en">Alerts are enriched with DNS and registration age, consolidated per domain, and worked in a drawer with evidence, diff, notes and timeline. Export STIX or a report when you hand off.</p><p data-lang="ar">تُثرى التنبيهات ببيانات DNS وعمر التسجيل وتُدمج لكل نطاق وتُعالج في لوحة جانبية تضم الأدلة والمقارنة والملاحظات والخط الزمني، ثم تُصدَّر بصيغة STIX أو كتقرير عند التسليم.</p></div>
+  </div>
+</section>
+
+<section id="screens">
+  <h2 data-lang="en">Inside the console</h2><h2 data-lang="ar">داخل وحدة التحكم</h2>
+  <div class="shots">
+    <figure><img src="docs/screenshots/03-certstream.png" alt="Certificate Transparency live feed"><figcaption data-lang="en">Certificate Transparency live feed with per-log coverage</figcaption><figcaption data-lang="ar">البث المباشر لسجلات الشهادات مع نسبة التغطية لكل سجل</figcaption></figure>
+    <figure><img src="docs/screenshots/04-scanner.png" alt="Domain scanner verdict"><figcaption data-lang="en">Domain scanner: risk gauge, indicators, look-alike diff</figcaption><figcaption data-lang="ar">فاحص النطاقات مع مقياس الخطر والمؤشرات والمقارنة البصرية</figcaption></figure>
+    <figure><img src="docs/screenshots/06-alerts.png" alt="Alerts triage"><figcaption data-lang="en">Alert triage with bulk actions and STIX export</figcaption><figcaption data-lang="ar">فرز التنبيهات مع إجراءات جماعية وتصدير STIX</figcaption></figure>
+    <figure><img src="docs/screenshots/05-brands.png" alt="Brand monitor"><figcaption data-lang="en">34 protected Qatari brands with Arabic aliases</figcaption><figcaption data-lang="ar">34 علامة قطرية محمية مع أسمائها العربية</figcaption></figure>
+  </div>
+</section>
+
+<section id="selfhost">
+  <h2 data-lang="en">Self-host the backend</h2><h2 data-lang="ar">استضافة الخلفية ذاتياً</h2>
+  <p class="sub" data-lang="en">The browser console needs no server. For monitoring around the clock, notifications to Slack, Teams, Telegram, e-mail or syslog, and a REST API with OpenAPI documentation, run the Python backend.</p>
+  <p class="sub" data-lang="ar">لا تحتاج وحدة التحكم في المتصفح إلى خادم، أما المراقبة على مدار الساعة والتنبيهات عبر Slack وTeams وTelegram والبريد وsyslog والواجهة البرمجية الموثقة بـ OpenAPI فتتطلب تشغيل الخلفية المكتوبة بلغة Python.</p>
+<pre><code># clone and install
+git clone https://github.com/SiteQ8/QACyberWatch.git
+cd QACyberWatch &amp;&amp; pip install -r requirements.txt
+
+# score a domain
+python main.py scan qnb-secure-login.xyz
+
+# tail CT logs directly (no third party)
+python main.py monitor
+
+# proactive typosquat watcher, API and dashboard
+python main.py watch-squats
+python main.py api            # http://localhost:5000
+
+# or everything at once
+docker compose up -d</code></pre>
+  <table>
+    <tr><th data-lang="en">Engine</th><th data-lang="ar">المحرك</th><td data-lang="en">Python 3.10+, dependency-free X.509 parser, SQLite with migrations</td><td data-lang="ar">Python 3.10 فما فوق مع محلل X.509 بلا اعتماديات وقاعدة SQLite مع ترحيلات</td></tr>
+    <tr><th data-lang="en">CT sources</th><th data-lang="ar">مصادر السجلات</th><td data-lang="en">RFC 6962 and Static CT API logs discovered from Google's log list, every shard that new certificates can land in</td><td data-lang="ar">سجلات RFC 6962 وStatic CT API المكتشفة من قائمة سجلات Google، مع متابعة كل الأجزاء التي قد تصل إليها الشهادات الجديدة</td></tr>
+    <tr><th data-lang="en">Intel</th><th data-lang="ar">الاستخبارات</th><td data-lang="en">OpenPhish and URLhaus out of the box; VirusTotal, URLScan, PhishTank and Google Safe Browsing with a key</td><td data-lang="ar">OpenPhish وURLhaus جاهزان فوراً، ويعمل VirusTotal وURLScan وPhishTank وGoogle Safe Browsing بمفتاح</td></tr>
+    <tr><th data-lang="en">Outputs</th><th data-lang="ar">المخرجات</th><td data-lang="en">STIX 2.1, CSV, Markdown and JSON reports, Prometheus metrics, syslog and CEF</td><td data-lang="ar">STIX 2.1 وCSV وتقارير Markdown وJSON ومقاييس Prometheus وsyslog وCEF</td></tr>
+    <tr><th data-lang="en">API</th><th data-lang="ar">الواجهة البرمجية</th><td data-lang="en">Signed bearer tokens, roles, rate limiting, OpenAPI at <code>/api/v1/docs</code></td><td data-lang="ar">رموز موقّعة وأدوار وتحديد للمعدل وتوثيق OpenAPI على <code>/api/v1/docs</code></td></tr>
+    <tr><th data-lang="en">License</th><th data-lang="ar">الرخصة</th><td data-lang="en">MIT, built by Ali AlEnezi (SiteQ8)</td><td data-lang="ar">MIT من تطوير علي العنزي (SiteQ8)</td></tr>
+  </table>
+</section>
+
+<section id="legal">
+  <div class="notice">
+    <strong data-lang="en">Important notice.</strong><strong data-lang="ar">تنبيه مهم</strong>
+    <span data-lang="en"> QACyberWatch produces automated heuristic findings from public data. A flagged domain is a candidate for review, not an accusation, and legitimate services will appear among the results. Verify independently before blocking, reporting or attributing. Brand names are used for identification only and remain the property of their owners. The software, site and published feed are provided as is, without warranty or liability. The console stores data only in your browser; this site sets no cookies and runs no analytics. Read the full <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">disclaimer and terms of use</a>.</span>
+    <span data-lang="ar"> يُنتج QACyberWatch نتائج استدلالية آلية من بيانات عامة، فالنطاق المرصود مرشح للمراجعة وليس اتهاماً، وستظهر خدمات مشروعة بين النتائج، لذا تحقق بنفسك قبل الحظر أو الإبلاغ أو النسب، وتُستخدم أسماء العلامات للتعريف فقط وتبقى ملكاً لأصحابها، ويُقدَّم البرنامج والموقع والبث المنشور كما هي من غير ضمان أو مسؤولية، وتخزن وحدة التحكم بياناتها في متصفحك فقط ولا يضع هذا الموقع ملفات تعريف ولا يشغّل أي تحليلات، <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">واقرأ إخلاء المسؤولية وشروط الاستخدام كاملة</a>.</span>
+  </div>
+</section>
+</main>
+<footer>© Ali AlEnezi (SiteQ8) · QACyberWatch is MIT licensed · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">Disclaimer</a> · <a href="demo/">Console</a> · <a href="https://github.com/SiteQ8/QACyberWatch">GitHub</a> · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/CHANGELOG.md">Changelog</a> · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/SECURITY.md">Security policy</a></footer>
+<script>
+(function(){var h=document.documentElement,en=document.getElementById('btnEn'),ar=document.getElementById('btnAr');function set(l){var rtl=l==='ar';h.setAttribute('dir',rtl?'rtl':'ltr');h.setAttribute('lang',l);en.classList.toggle('on',!rtl);ar.classList.toggle('on',rtl);try{localStorage.setItem('qcw-lang',l)}catch(e){}}en.onclick=function(){set('en')};ar.onclick=function(){set('ar')};var saved=null;try{saved=localStorage.getItem('qcw-lang')}catch(e){}if(saved==='ar'||(!saved&&/^ar\b/.test(navigator.language||'')))set('ar');})();
+</script>
+</body>
+</html>

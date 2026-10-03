@@ -1,0 +1,67 @@
+services:
+  qacyberwatch-api:
+    build: .
+    container_name: qacyberwatch-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - QCW_API_SECRET=${QCW_API_SECRET:-change-me}
+      - QCW_ADMIN_PASSWORD=${QCW_ADMIN_PASSWORD:-admin}
+      - QCW_API_KEY=${QCW_API_KEY:-}
+      - QCW_AUTH_REQUIRED=${QCW_AUTH_REQUIRED:-false}
+      - QCW_VT_API_KEY=${QCW_VT_API_KEY:-}
+      - QCW_URLSCAN_KEY=${QCW_URLSCAN_KEY:-}
+      - QCW_GSB_KEY=${QCW_GSB_KEY:-}
+      - QCW_SLACK_WEBHOOK=${QCW_SLACK_WEBHOOK:-}
+      - QCW_TEAMS_WEBHOOK=${QCW_TEAMS_WEBHOOK:-}
+      - QCW_TELEGRAM_TOKEN=${QCW_TELEGRAM_TOKEN:-}
+      - QCW_TELEGRAM_CHAT=${QCW_TELEGRAM_CHAT:-}
+    command: ["api"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/api/v1/health', timeout=4).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  qacyberwatch-monitor:
+    build: .
+    container_name: qacyberwatch-monitor
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - QCW_SLACK_WEBHOOK=${QCW_SLACK_WEBHOOK:-}
+      - QCW_TEAMS_WEBHOOK=${QCW_TEAMS_WEBHOOK:-}
+      - QCW_TELEGRAM_TOKEN=${QCW_TELEGRAM_TOKEN:-}
+      - QCW_TELEGRAM_CHAT=${QCW_TELEGRAM_CHAT:-}
+      - QCW_WEBHOOK_URL=${QCW_WEBHOOK_URL:-}
+      - QCW_WEBHOOK_SECRET=${QCW_WEBHOOK_SECRET:-}
+    command: ["monitor"]
+    restart: unless-stopped
+    depends_on:
+      qacyberwatch-api:
+        condition: service_healthy
+
+  # Proactive typosquat discovery: resolves permutations of every protected
+  # brand on a schedule and alerts when a new look-alike goes live.
+  qacyberwatch-watcher:
+    build: .
+    container_name: qacyberwatch-watcher
+    volumes:
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml:ro
+    environment:
+      - QCW_SLACK_WEBHOOK=${QCW_SLACK_WEBHOOK:-}
+      - QCW_TEAMS_WEBHOOK=${QCW_TEAMS_WEBHOOK:-}
+      - QCW_TELEGRAM_TOKEN=${QCW_TELEGRAM_TOKEN:-}
+      - QCW_TELEGRAM_CHAT=${QCW_TELEGRAM_CHAT:-}
+    command: ["watch-squats"]
+    restart: unless-stopped
+    depends_on:
+      qacyberwatch-api:
+        condition: service_healthy
