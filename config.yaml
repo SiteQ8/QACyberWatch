@@ -1,0 +1,210 @@
+# QACyberWatch Configuration
+# Qatar Phishing Detection & Brand Protection Suite v1.0.0
+#
+# Resolution order: --config PATH > $QCW_CONFIG > config.local.yaml > config.yaml
+# Copy this file to config.local.yaml (git-ignored) for secrets, or use the
+# QCW_* environment variables listed at the bottom.
+
+certstream:
+  source: ctlogs               # ctlogs = read Certificate Transparency logs directly (no third-party
+                               # service); certstream = legacy CertStream WebSocket (url below)
+  url: "wss://certstream.calidog.io/"
+  ct_logs: []                  # explicit RFC 6962 log URLs; empty = Google log list + built-in shards
+  ct_batch_size: 256
+  ct_poll_interval: 2.0
+  ct_max_lag: 5000
+  keywords:                    # keywords shorter than min_keyword_length match whole tokens only
+    - qatar
+    - qatari
+    - doha
+    - 974
+    - qtr
+    - قطر
+    - qnb
+    - qnbgroup
+    - qib
+    - qibonline
+    - qcb
+    - ahlibank
+    - alrayan
+    - doha-bank
+    - dohabank
+    - qpost
+    - dukhanbank
+    - dukhan-bank
+    - dukhanbank
+    - sadad
+    - sadadpay
+    - qpay
+    - qatarpay
+    - qatarpay
+    - vodafone-qa
+    - ooredoo-qa
+    - ooredoo-qa
+    - moi-qa
+    - mofa-qa
+    - ncsa-qa
+    - moph-qa
+    - e-gov-qa
+    - egov-qa
+    - moci-qa
+    - hukoomi
+    - qatarid
+    - qatarairways
+    - talabat
+  retry_delay: 5
+  max_delay: 300
+  log_file: "data/certstream_domains.log"
+  heartbeat_interval: 100      # persist monitor stats every N certificates
+  persist_events: true         # store matched certificates in the database
+  ignore_wildcards: false
+  min_keyword_length: 3
+
+domain_analysis:
+  homoglyph_threshold: 0.85
+  levenshtein_threshold: 3     # hard cap; the effective threshold scales with brand length
+  entropy_threshold: 3.5
+  enable_whois: true
+  enable_dns: true
+  allowlist: []                # domains (and their subdomains) that are never reported
+  max_permutations: 2000
+  protected_brands:
+    - qnb.com
+    - qnb.com.qa
+    - cbq.qa
+    - dohabank.com
+    - dohabank.qa
+    - qib.com.qa
+    - alrayan.com
+    - dukhanbank.com
+    - ahlibank.com.qa
+    - qiib.com.qa
+    - qdb.qa
+    - qcb.gov.qa
+    - qfc.qa
+    - sadad.qa
+    - ooredoo.qa
+    - vodafone.qa
+    - hukoomi.gov.qa
+    - moi.gov.qa
+    - ncsa.gov.qa
+    - qcert.org
+    - moph.gov.qa
+    - hamad.qa
+    - mcit.gov.qa
+    - moci.gov.qa
+    - km.qa
+    - ashghal.gov.qa
+    - qatarenergy.qa
+    - qatarairways.com
+    - dohahamadairport.com
+    - qpost.qa
+    - qcharity.org
+    - qrcs.org.qa
+    - snoonu.com
+    - talabat.com
+    - qu.edu.qa
+    - qf.org.qa
+
+# Extra brand profiles merged with the 26 built-in Qatar profiles.
+# Set brands_replace_defaults: true to monitor only the brands listed here.
+brands: []
+#  - name: "My Bank"
+#    short_name: "MYB"
+#    domains: ["mybank.com.qa"]
+#    keywords: ["mybank", "my bank qatar"]
+#    aliases: ["mybankonline"]
+#    arabic_keywords: ["بنكي"]
+#    industry: banking
+#    priority: critical
+brands_replace_defaults: false
+
+squat_watcher:
+  enabled: true
+  interval_seconds: 21600      # 6 hours
+  tlds: [com, net, org, qa, com.qa, co, info, biz, me, io, app, xyz, top, online, site, icu, club, live, shop, cc, link, click]
+  brands: []                   # empty = all protected brands
+  include_combos: true
+  max_workers: 32
+  dns_timeout: 3.0
+  max_candidates_per_brand: 1500
+  notify_severity: high
+
+api:
+  host: "0.0.0.0"
+  port: 5000
+  debug: false
+  secret_key: "change-me-in-production"   # signs bearer tokens (QCW_API_SECRET)
+  api_key: ""                             # optional static key for integrations (X-API-Key)
+  auth_required: false                    # true = every endpoint needs a token / API key
+  admin_password: "admin"                 # QCW_ADMIN_PASSWORD
+  analyst_password: "analyst"             # QCW_ANALYST_PASSWORD
+  token_ttl_seconds: 28800
+  rate_limit: "100/hour"                  # per client IP, "" to disable
+  max_bulk_domains: 100
+  enable_metrics: true                    # Prometheus endpoint at /metrics
+  trust_proxy: false                      # honour X-Forwarded-For for rate limiting
+  cors_origins:
+    - "*"
+
+notifications:
+  min_severity: medium         # critical | high | medium | low
+  cooldown_seconds: 3600       # suppress repeat alerts for the same domain + type
+
+  email_enabled: false
+  email_smtp_server: ""
+  email_smtp_port: 587
+  email_username: ""
+  email_password: ""
+  email_recipients: []
+
+  slack_enabled: false
+  slack_webhook_url: ""
+  slack_channel: "#phishing-alerts"
+
+  teams_enabled: false
+  teams_webhook_url: ""
+
+  telegram_enabled: false
+  telegram_bot_token: ""
+  telegram_chat_id: ""
+
+  webhook_enabled: false
+  webhook_url: ""
+  webhook_secret: ""           # HMAC-SHA256 signature in X-QCW-Signature
+
+  syslog_enabled: false        # CEF over syslog for SIEM ingestion
+  syslog_host: "127.0.0.1"
+  syslog_port: 514
+  syslog_protocol: udp         # udp | tcp
+  syslog_facility: 16          # local0
+
+threat_intel:
+  virustotal_api_key: ""
+  urlscan_api_key: ""
+  shodan_api_key: ""
+  abuseipdb_api_key: ""
+  phishtank_api_key: ""
+  google_safebrowsing_key: ""
+  openphish_enabled: true      # free feed, no key required
+  urlhaus_enabled: true        # free abuse.ch API, no key required
+  cache_ttl_seconds: 3600
+  feed_refresh_seconds: 3600
+  request_timeout: 10
+  cache_dir: "data/intel_cache"
+
+database:
+  db_type: sqlite
+  db_path: "data/qacyberwatch.db"
+  retention_days: 0            # 0 = keep everything
+
+log_level: INFO
+data_dir: data
+
+# Environment variable overrides (take precedence over this file):
+#   QCW_CONFIG, QCW_API_SECRET, QCW_API_KEY, QCW_API_HOST, QCW_API_PORT, QCW_AUTH_REQUIRED,
+#   QCW_ADMIN_PASSWORD, QCW_ANALYST_PASSWORD, QCW_RATE_LIMIT, QCW_DB_PATH, QCW_LOG_LEVEL,
+#   QCW_DATA_DIR, QCW_CERTSTREAM_URL, QCW_MIN_SEVERITY,
+#   QCW_VT_API_KEY, QCW_URLSCAN_KEY, QCW_GSB_KEY, QCW_PHISHTANK_KEY, QCW_SHODAN_KEY, QCW_ABUSEIPDB_KEY,
+#   QCW_SLACK_WEBHOOK, QCW_TEAMS_WEBHOOK, QCW_TELEGRAM_TOKEN, QCW_TELEGRAM_CHAT,
+#   QCW_WEBHOOK_URL, QCW_WEBHOOK_SECRET, QCW_SMTP_PASSWORD

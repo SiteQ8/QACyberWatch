@@ -1,0 +1,28 @@
+# QACyberWatch Code Owners
+# These owners will be automatically requested for review on PRs
+
+# Global owners
+* @SiteQ8
+
+# Core detection engine
+/src/core/ @SiteQ8
+
+# API and authentication
+/src/api/ @SiteQ8
+
+# Notification system
+/src/notifications/ @SiteQ8
+
+# Configuration and infrastructure
+/src/config/ @SiteQ8
+/Dockerfile @SiteQ8
+/docker-compose.yml @SiteQ8
+/.github/ @SiteQ8
+
+# Documentation
+/docs/ @SiteQ8
+README.md @SiteQ8
+
+# Security-sensitive files
+/src/api/auth.py @SiteQ8
+SECURITY.md @SiteQ8
