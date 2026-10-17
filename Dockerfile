@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM python:3.14-slim
 
 LABEL maintainer="Ali AlEnezi <Site@hotmail.com>"
 LABEL description="QACyberWatch - Qatar Phishing Detection & Brand Protection Suite"
