@@ -1,182 +1,1122 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QACyberWatch, phishing detection and brand protection for Qatar</title>
-<meta name="description" content="QACyberWatch: open-source phishing detection and brand protection for the State of Qatar. Live Certificate Transparency tailing, look-alike domain hunting and brand impersonation alerts for Qatari banks, payment services, telecoms and government services, in your browser or self-hosted.">
+<title>QACyberWatch, the register of certificates issued for Qatar's names</title>
+<meta name="description" content="QACyberWatch reads the public Certificate Transparency logs as they are written and lists every certificate issued for a Qatari name, scored for impersonation of Qatar's banks, payment services, telecoms and ministries. Open source, bilingual, runs in the browser.">
 <link rel="canonical" href="https://qacyberwatch.3li.info/">
-<meta property="og:title" content="QACyberWatch, phishing detection and brand protection for Qatar">
-<meta property="og:description" content="Live CT log monitoring, look-alike hunting and brand impersonation alerts for Qatar. No third-party feed. Runs in your browser.">
+<meta property="og:title" content="QACyberWatch, seen before the first phish">
+<meta property="og:description" content="Every certificate issued for a Qatari name, read from the public logs as it is written and scored for impersonation. Open source, bilingual, no third-party feed.">
 <meta property="og:image" content="https://qacyberwatch.3li.info/docs/screenshots/02-dashboard.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://qacyberwatch.3li.info/">
-<meta name="theme-color" content="#0b0609">
+<meta name="theme-color" content="#8a1538">
+<link rel="icon" href="demo/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="demo/icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b0609;--bg2:#140a10;--card:#1b0e15;--line:#36202b;--ink:#f5edf0;--dim:#bba7ae;--maroon:#8a1538;--maroon2:#b11e4c;--sand:#d9b36b;--font-latin:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--font-arabic:"IBM Plex Sans Arabic","Noto Sans Arabic",system-ui,sans-serif}
-*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:radial-gradient(1200px 600px at 20% -10%,#2a0f1d 0%,var(--bg) 55%);color:var(--ink);font:16px/1.65 var(--font-latin)}
-html[dir="rtl"] body{font-family:var(--font-arabic);line-height:1.85}
-[lang="ar"]{font-family:var(--font-arabic)}
-a{color:var(--sand)}img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--line);display:block}
-header{position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);background:rgba(11,6,9,.9);border-bottom:1px solid var(--line)}
-.nav{max-width:1120px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
-.brand{font-weight:800;letter-spacing:.3px;font-size:1.15rem;color:#fff;text-decoration:none;white-space:nowrap;font-family:var(--font-latin)}.brand span{color:var(--sand)}
-.links{display:flex;gap:18px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none;padding:4px 0}.links::-webkit-scrollbar{display:none}
-.links a{color:var(--dim);text-decoration:none;font-size:.93rem;white-space:nowrap}.links a:hover{color:#fff}
-.actions{display:flex;align-items:center;gap:10px;margin-inline-start:auto}
-.btn{display:inline-block;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;border:1px solid var(--line);color:#fff;white-space:nowrap;line-height:1.3;text-align:center}
-.btn.primary{background:linear-gradient(135deg,var(--maroon),var(--maroon2));border-color:transparent;box-shadow:0 6px 18px rgba(177,30,76,.25)}.btn.ghost{background:transparent}.btn.sm{padding:8px 12px;font-size:.9rem}
-.lang{border:1px solid var(--line);border-radius:999px;padding:3px;display:flex;gap:2px;background:var(--bg2)}
-.lang button{background:transparent;border:0;color:var(--dim);padding:5px 12px;border-radius:999px;cursor:pointer;font-weight:700;font-family:inherit;font-size:.88rem;line-height:1.4}.lang button.on{background:var(--maroon);color:#fff}
-main{max-width:1120px;margin:0 auto;padding:16px 20px 60px}
-.hero{padding:44px 0 20px;display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center}
-.eyebrow{color:var(--sand);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem}html[dir="rtl"] .eyebrow{letter-spacing:0;font-size:.95rem}
-h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.12;margin:10px 0 14px;letter-spacing:-.01em}html[dir="rtl"] h1{font-size:clamp(1.85rem,5vw,2.75rem);line-height:1.45;letter-spacing:0;font-weight:700}
-h2{font-size:1.7rem;margin:0 0 6px;letter-spacing:-.01em}html[dir="rtl"] h2{font-size:1.5rem;line-height:1.55;letter-spacing:0}
-h3{margin:0 0 6px;font-size:1.05rem}
-.lead{color:var(--dim);font-size:1.08rem;max-width:58ch}html[dir="rtl"] .lead{font-size:1.04rem;line-height:2}
-.cta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 0}.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}.stat b{display:block;font-size:1.6rem;color:#fff;font-family:var(--font-latin);direction:ltr;unicode-bidi:isolate}.stat span{color:var(--dim);font-size:.85rem}
-section{padding:40px 0;border-top:1px solid var(--line)}.sub{color:var(--dim);max-width:70ch;margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;transition:border-color .2s,transform .2s}.card:hover{border-color:#5a3042;transform:translateY(-2px)}.card p{color:var(--dim);margin:0;font-size:.95rem}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}.step .n{color:var(--sand);font-weight:800;font-size:.8rem;letter-spacing:.1em;font-family:var(--font-latin)}.step p{color:var(--dim);margin:0;font-size:.95rem}
-.shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}.shots figure{margin:0}.shots figcaption{color:var(--dim);font-size:.85rem;margin-top:6px}
-pre{background:#080406;border:1px solid var(--line);border-radius:12px;padding:16px;overflow:auto;font-size:.88rem;line-height:1.5;direction:ltr;text-align:left}code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-top:18px}.spec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}.spec b{display:block;color:var(--sand);font-size:.85rem;margin-bottom:4px}.spec span{color:var(--dim);font-size:.93rem}
-.notice{background:var(--bg2);border:1px solid var(--line);border-inline-start:4px solid var(--sand);border-radius:12px;padding:16px;color:var(--dim)}
-footer{border-top:1px solid var(--line);color:var(--dim);font-size:.88rem;padding:24px 20px;text-align:center;line-height:2}
-[data-lang="ar"]{display:none}html[dir="rtl"] [data-lang="ar"]{display:revert}html[dir="rtl"] [data-lang="en"]{display:none}
-@media (max-width:900px){.hero{grid-template-columns:1fr;gap:24px;padding-top:28px}.stats{grid-template-columns:repeat(2,1fr)}.steps,.shots{grid-template-columns:1fr}}
-@media (max-width:720px){.nav{flex-wrap:wrap;row-gap:8px}.links{order:3;flex:1 1 100%;gap:16px;border-top:1px solid var(--line);padding-top:8px}.actions .github,.actions .btn.primary{display:none}.cta .btn{flex:1 1 100%}h1{font-size:2rem}html[dir="rtl"] h1{font-size:1.8rem}}
+:root{
+  --maroon:#8a1538;--maroon-deep:#6b0f2b;--maroon-ink:#4a0a1e;
+  --paper:#f2f1ee;--paper-2:#e7e5e0;--ink:#15110f;--ink-2:#4b413c;
+  --rose:#e9c6d0;--rose-2:#f7e6ea;
+  --font-en-display:"Libre Franklin",system-ui,sans-serif;--font-en-text:"Source Serif 4",Georgia,serif;
+  --font-ar-display:"Amiri","Noto Naskh Arabic",serif;--font-ar-text:"Noto Naskh Arabic","Amiri",serif;
+  --t-small:1rem;--t-claim:clamp(2rem,1.4rem + 1.6vw,2.75rem);--t-body:1.125rem;--t-lead:clamp(1.3125rem,1rem + 0.9vw,1.625rem);--t-head:clamp(2rem,1.2rem + 2.6vw,3.5rem);--t-display:clamp(2.75rem,1.6rem + 4.8vw,5.75rem);
+  --gutter:clamp(20px,3vw,48px);--frame:1320px;--serr:22px;
+  --ease-out:cubic-bezier(.22,1,.36,1);--ease-expo:cubic-bezier(.16,1,.3,1);--ease-in-out:cubic-bezier(.76,0,.24,1);--ease-soft:cubic-bezier(.33,1,.68,1);
+  --t-press:140ms;--t-hover:180ms;--t-ui:240ms;--t-reveal:800ms;--stagger-line:90ms;--stagger-item:70ms;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--maroon)}
+body{margin:0;background:var(--maroon);color:var(--paper);font-family:var(--font-en-text);font-size:var(--t-body);line-height:1.5;font-variant-numeric:lining-nums;text-rendering:optimizeLegibility}
+html[dir=rtl] body{font-family:var(--font-ar-text);line-height:1.85}
+::selection{background:var(--ink);color:var(--paper)}
+.sheet ::selection{background:var(--maroon);color:var(--paper)}
+input,button{caret-color:var(--maroon);font:inherit}
+:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.sheet :focus-visible,.showcase.is-live :focus-visible,.cta :focus-visible{outline-color:var(--maroon)}
+html{scrollbar-color:var(--rose) var(--maroon-deep)}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+p{margin:0;text-wrap:pretty}
+h1,h2,h3{margin:0;text-wrap:balance;font-family:var(--font-en-display);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+html[dir=rtl] h1,html[dir=rtl] h2,html[dir=rtl] h3{font-family:var(--font-ar-display);font-weight:700;letter-spacing:0;line-height:1.35}
+h2{font-size:var(--t-head)}
+h3{font-size:var(--t-lead)}
+ul,ol{margin:0;padding:0;list-style:none}
+[data-lang=ar]{display:none}
+html[dir=rtl] [data-lang=ar]{display:revert}
+html[dir=rtl] [data-lang=en]{display:none}
+.frame{width:100%;max-width:var(--frame);margin-inline:auto;padding-inline:var(--gutter)}
+.num{font-family:var(--font-en-display);font-variant-numeric:tabular-nums lining-nums}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* buttons and links */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;padding:.78em 1.4em;font-family:var(--font-en-display);font-weight:600;font-size:var(--t-body);line-height:1.2;text-decoration:none;background:var(--paper);color:var(--maroon);border:0;border-radius:0;cursor:pointer;white-space:nowrap;transition:transform var(--t-press) var(--ease-out),background-color var(--t-hover) ease,color var(--t-hover) ease}
+html[dir=rtl] .btn{font-family:var(--font-ar-text);font-weight:700}
+.btn:active{transform:scale(.97)}
+.btn.inverse{background:var(--maroon);color:var(--paper)}
+@media(hover:hover) and (pointer:fine){.btn:hover{background:var(--rose)}.btn.inverse:hover{background:var(--maroon-deep)}}
+.link{text-decoration:underline;text-decoration-thickness:.07em;text-underline-offset:.2em;text-decoration-color:currentColor;transition:text-decoration-color var(--t-hover) ease}
+@media(hover:hover) and (pointer:fine){.link:hover{text-decoration-color:transparent}}
+
+/* navigation */
+.nav{position:relative;z-index:3}
+.nav .frame{display:flex;align-items:center;gap:22px;padding-block:18px}
+.brand{font-family:var(--font-en-display);font-weight:800;font-size:var(--t-body);letter-spacing:-.01em;color:var(--paper);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--rose)}
+.nav nav{display:flex;gap:22px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{color:var(--rose-2);text-decoration:none;font-family:var(--font-en-display);font-weight:500;font-size:var(--t-small);white-space:nowrap;padding-block:4px}
+html[dir=rtl] .nav nav a{font-family:var(--font-ar-text);font-weight:600}
+@media(hover:hover) and (pointer:fine){.nav nav a:hover{color:#fff}}
+.nav .actions{display:flex;align-items:center;gap:12px;margin-inline-start:auto}
+.nav .actions .btn{margin-inline-end:-1.4em}
+.lang{display:flex;background:var(--maroon-deep);padding:3px}
+.lang button{background:transparent;border:0;color:var(--rose);padding:6px 12px;cursor:pointer;font-family:var(--font-en-display);font-weight:600;font-size:var(--t-small);line-height:1.4;transition:background-color var(--t-hover) ease,color var(--t-hover) ease}
+.lang button[lang=ar]{font-family:var(--font-ar-text);font-weight:700}
+.lang button[aria-pressed=true]{background:var(--paper);color:var(--maroon)}
+
+/* paper sheets and the serrated edge */
+.sheet{position:relative;background:var(--paper);color:var(--ink)}
+.sheet.top::before,.sheet.bottom::after{content:"";position:absolute;left:0;right:0;height:var(--serr);background-repeat:repeat-x;background-size:calc(var(--serr) * 2) var(--serr)}
+.sheet.top::before{top:calc(var(--serr) * -1 + 1px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M0 22L22 0L44 22Z' fill='%23f2f1ee'/%3E%3C/svg%3E")}
+.sheet.bottom::after{bottom:calc(var(--serr) * -1 + 1px);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 22'%3E%3Cpath d='M0 0L22 22L44 0Z' fill='%23f2f1ee'/%3E%3C/svg%3E")}
+.sheet h2,.sheet h3{color:var(--ink)}
+.sheet .muted{color:var(--ink-2)}
+.muted{color:var(--rose)}
+
+/* hero */
+.hero{padding-block:16px 0;overflow:clip}
+.hero .sheet{margin-top:calc(var(--serr) + 40px);padding:clamp(28px,4vw,64px) clamp(20px,4vw,64px) clamp(32px,5vw,72px)}
+.masthead{display:grid;grid-template-columns:1fr auto;gap:16px 40px;align-items:baseline}
+.masthead .title{font-family:var(--font-en-display);font-weight:600;font-size:var(--t-lead);line-height:1.25}
+.masthead .title[lang=ar]{font-family:var(--font-ar-display);font-weight:700;text-align:end}
+.masthead .bar{grid-column:1 / -1;height:4px;background:var(--ink);margin-top:4px}
+html[dir=rtl] .masthead{grid-template-columns:auto 1fr}
+.hero h1{font-size:var(--t-display);margin-top:clamp(28px,4vw,56px);max-width:16ch;color:var(--maroon)}
+.lines .line{display:block;overflow:hidden;padding-bottom:.1em;margin-bottom:-.1em}
+.lines [data-line]{display:block}
+.support{font-size:var(--t-lead);max-width:52ch;margin-top:clamp(18px,2vw,28px);color:var(--ink)}
+.lookup{margin-top:clamp(24px,3vw,40px);max-width:760px}
+.lookup label{display:block;font-family:var(--font-en-display);font-weight:600;font-size:var(--t-body);margin-bottom:10px}
+html[dir=rtl] .lookup label{font-family:var(--font-ar-text);font-weight:700}
+.lookup .row{display:flex;gap:10px;flex-wrap:wrap}
+.lookup input{flex:1 1 320px;min-width:0;padding:.78em 1em;border:3px solid var(--ink);background:#fff;color:var(--ink);font-family:var(--font-en-display);font-size:var(--t-body);border-radius:0;direction:ltr}
+.lookup input::placeholder{color:#6a6059}
+.verdict{margin-top:20px;background:var(--paper-2);padding:18px 20px;display:none;color:var(--ink)}
+.verdict.is-on{display:block}
+.verdict .head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px}
+.verdict .dom{font-family:var(--font-en-display);font-weight:800;font-size:var(--t-lead);overflow-wrap:anywhere}
+.verdict .lv{font-family:var(--font-en-display);font-weight:800;color:var(--maroon)}
+.verdict .bar{height:10px;background:#fff;margin-top:12px}
+.verdict .bar b{display:block;height:100%;background:var(--maroon);width:0;transition:width 600ms var(--ease-out)}
+.verdict ul{margin-top:12px}
+.verdict li{padding-block:4px}
+.verdict .diff{margin-top:12px;font-family:var(--font-en-display);font-size:var(--t-body);direction:ltr;text-align:left;overflow-wrap:anywhere}
+.verdict .diff mark{background:var(--rose);color:var(--maroon-ink);padding:0 .1em}
+.verdict .next{margin-top:14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.register{margin-top:clamp(36px,5vw,64px)}
+.register h2{font-size:var(--t-lead);font-weight:600}
+.register .issue{margin:4px 0 16px;color:var(--ink-2);font-size:var(--t-small)}
+.register .legend,.register .row{display:grid;grid-template-columns:5.5ch minmax(0,2.2fr) minmax(0,1fr) minmax(0,1.3fr) minmax(0,1.3fr) 8ch;gap:0 18px;align-items:baseline;padding-block:9px}
+.register .legend{font-family:var(--font-en-display);font-weight:600;font-size:var(--t-small);color:var(--ink-2);padding-bottom:8px}
+html[dir=rtl] .register .legend{font-family:var(--font-ar-text)}
+.register .row{font-size:var(--t-small);background:var(--paper)}
+.register .row:nth-child(odd){background:#fff}
+.register .t{font-family:var(--font-en-display);font-variant-numeric:tabular-nums}
+.register .h{font-family:var(--font-en-display);font-weight:500;overflow-wrap:anywhere;text-align:left}
+.register .k,.register .l,.register .i{color:var(--ink-2);overflow-wrap:anywhere;text-align:left}
+.register .v{font-family:var(--font-en-display);font-weight:600;text-align:end}
+html[dir=rtl] .register .v{font-family:var(--font-ar-text);font-weight:700}
+.register .lv-high .v,.register .lv-critical .v{color:var(--maroon)}
+.register .foot{margin-top:14px;max-width:72ch;font-size:var(--t-small);color:var(--ink-2);display:flex;flex-wrap:wrap;gap:6px 24px}
+
+/* sections on the maroon field */
+section{position:relative}
+.stats{min-height:90svh;display:flex;flex-direction:column;justify-content:space-between;padding-block:clamp(72px,9vw,140px) clamp(56px,7vw,104px)}
+.stats h2{font-size:var(--t-claim);color:var(--paper)}
+.stats .figure{margin-top:clamp(80px,22vh,220px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-items:end}
+.stats .big{font-family:var(--font-en-display);font-weight:800;font-size:clamp(7.5rem,23vw,23.75rem);line-height:.8;letter-spacing:-.03em;color:var(--paper);font-variant-numeric:tabular-nums lining-nums;direction:ltr;display:inline-block}
+.stats .big sup{font-size:.26em;vertical-align:top;line-height:1;margin-inline-start:.08em;font-weight:600;letter-spacing:0;position:relative;top:.18em}
+html[dir=rtl] .stats .big sup{font-family:var(--font-ar-text);font-weight:700;font-size:.2em}
+.stats .caption{max-width:34ch;margin-top:44px;font-size:var(--t-body);color:var(--paper)}
+.stats .series{display:flex;align-items:flex-end;gap:4px;height:64px;margin-top:28px;max-width:420px}
+.stats .series i{display:block;flex:1;background:var(--rose);min-height:3px;transform-origin:bottom}
+.stats .series i.today{background:var(--paper)}
+.stats .source{font-size:var(--t-small);color:var(--rose);text-align:end;align-self:end}
+html[dir=rtl] .stats .source{text-align:start}
+
+/* method sheet */
+.method{margin-top:calc(var(--serr) + clamp(40px,6vw,96px))}
+.method .sheet{padding:clamp(40px,5vw,80px) clamp(20px,4vw,64px) clamp(48px,6vw,96px)}
+.method .intro{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.method .intro h2{grid-column:1 / span 4}
+.method .intro p{grid-column:5 / span 6;font-size:var(--t-lead);line-height:1.4;align-self:end}
+.diagram{display:block;width:100%;height:auto;margin-top:clamp(32px,4vw,56px)}
+.diagram.stage{display:none}
+html[dir=rtl] .diagram.wide{transform:scaleX(-1)}
+.diagram .q1{fill:#cfcbc3}.diagram .q2{fill:#b9b3a9}.diagram .q3{fill:var(--ink)}.diagram .q4{fill:var(--maroon)}
+.method .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:clamp(24px,3vw,40px)}
+.method .cols h3{font-size:var(--t-lead)}
+.method .cols p{margin-top:8px;color:var(--ink-2)}
+
+/* the plate */
+.plate{margin:clamp(64px,9vw,140px) auto 0;padding-inline:var(--gutter);max-width:1080px}
+.plate figure{margin:0}
+.plate img{width:100%;aspect-ratio:1000/675;object-fit:cover}
+.plate figcaption{margin-top:12px;font-size:var(--t-small);color:var(--rose-2)}
+
+/* features: panel with margin notes */
+.features{padding-top:clamp(72px,9vw,140px)}
+.features .lay{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;align-items:start}
+.features h2{grid-column:1 / span 4;text-align:end;color:var(--paper)}
+html[dir=rtl] .features h2{text-align:start}
+.features .notes{display:contents}
+.features .note{font-size:var(--t-small);max-width:24ch}
+.features .note b{display:block;font-family:var(--font-en-display);font-weight:600;font-size:var(--t-body);color:var(--paper)}
+html[dir=rtl] .features .note b{font-family:var(--font-ar-text);font-weight:700}
+.features .note p{color:var(--rose-2)}
+.features .note.left{grid-column:1 / span 4;justify-self:end;text-align:end}
+.features .note.right{grid-column:9 / span 4;text-align:start}
+html[dir=rtl] .features .note.left{text-align:start}
+html[dir=rtl] .features .note.right{text-align:end}
+.features .note.right{justify-self:start}
+.panel{grid-column:5 / span 4;grid-row:1 / span 7;justify-self:center;width:100%;max-width:400px;background:var(--paper);color:var(--ink);padding:22px 22px 24px;font-family:var(--font-en-display);font-size:var(--t-small);line-height:1.4;direction:ltr;text-align:left}
+.panel .ph{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.panel .pd{font-weight:800;font-size:var(--t-body);overflow-wrap:anywhere}
+.panel .pl{font-weight:800;color:var(--maroon);white-space:nowrap}
+.panel .pbar{height:10px;background:var(--paper-2);margin-top:12px}
+.panel .pbar b{display:block;height:100%;width:73%;background:var(--maroon)}
+.panel .pk{margin-top:18px}
+.panel .pk b{display:block;font-weight:600;color:var(--ink-2)}
+.panel .pk span{display:block;margin-top:2px}
+.panel .pi li{display:flex;justify-content:space-between;gap:12px;padding-block:5px}
+.panel .pi li em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--maroon);font-weight:600;white-space:nowrap}
+.panel .pdiff{margin-top:18px;background:#fff;padding:12px}
+.panel .pdiff div{overflow-wrap:anywhere}
+.panel .pdiff mark{background:var(--rose);color:var(--maroon-ink);padding:0 .08em}
+.panel .pact{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.panel .pact .btn{padding:.6em .95em;font-size:var(--t-small)}
+.panel .pact .btn.ghost{background:var(--paper-2);color:var(--ink)}
+.panel [data-part]{transition:box-shadow var(--t-hover) ease}
+.panel [data-part].is-hot{box-shadow:0 0 0 3px var(--maroon)}
+.features .note{cursor:default}
+
+/* showcase: one control, blown up */
+.showcase{margin-top:clamp(72px,9vw,140px);min-height:78svh;background:var(--maroon-deep);color:var(--paper);overflow:hidden;transition:background-color 300ms ease,color 300ms ease}
+.showcase.is-live{background:var(--paper);color:var(--ink)}
+.showcase .frame{position:relative;padding-top:clamp(40px,6vw,80px);padding-bottom:40px;min-height:78svh}
+.showcase h2{font-size:var(--t-claim);color:inherit}
+.showcase .lead{margin-top:14px;max-width:44ch;font-size:var(--t-body)}
+.showcase .ticker{position:absolute;left:0;right:0;top:40%;overflow:hidden;white-space:nowrap;font-family:var(--font-en-display);font-size:var(--t-small);direction:ltr}
+.showcase .ticker ul{display:inline-flex;gap:40px;padding-inline-end:40px;animation:tape 60s linear infinite}
+.showcase:not(.is-live) .ticker ul{animation-play-state:paused}
+.showcase .ticker li{display:inline-flex;gap:10px;align-items:baseline}
+.showcase .ticker li b{font-weight:800;color:var(--maroon)}
+.showcase:not(.is-live) .ticker li b{color:var(--rose)}
+@keyframes tape{to{transform:translateX(-50%)}}
+.switch{position:absolute;right:-13%;bottom:-5%;font-size:min(38vh,25vw);width:2.1em;height:1.16em;background:var(--maroon);border:0;border-radius:0;cursor:pointer;color:var(--paper);display:block;padding:0;font-family:var(--font-en-display);transition:background-color 300ms ease,transform var(--t-press) var(--ease-out)}
+.switch:active{transform:scale(.99)}
+.showcase.is-live .switch{background:var(--maroon)}
+.showcase:not(.is-live) .switch{background:var(--paper);color:var(--ink)}
+.switch .thumb{position:absolute;top:.08em;left:1.02em;width:1em;height:1em;background:var(--paper);transition:transform 400ms var(--ease-in-out)}
+.showcase:not(.is-live) .switch .thumb{transform:translateX(-.94em);background:var(--ink)}
+.switch .lab{position:absolute;left:.08em;top:.1em;font-size:.08em;font-weight:600;text-align:left;line-height:1.2}
+html[dir=rtl] .switch{right:auto;left:-13%}
+html[dir=rtl] .switch .lab,html[dir=rtl] .switch .val{left:auto;right:.08em;text-align:right}
+html[dir=rtl] .switch .thumb{left:auto;right:1.02em}
+html[dir=rtl] .showcase:not(.is-live) .switch .thumb{transform:translateX(.94em)}
+html[dir=rtl] .switch .lab{font-family:var(--font-ar-text)}
+.switch .val{position:absolute;left:.08em;top:.46em;font-size:.26em;font-weight:800;line-height:1;text-align:left}
+.showcase:not(.is-live) .switch .val{color:var(--ink)}
+html[dir=rtl] .switch .val{font-family:var(--font-ar-display)}
+
+/* the brand sheet on the city */
+.brands{position:relative;margin-top:0;padding-block:clamp(72px,9vw,140px);background:#070508;overflow:hidden}
+.brands .bg{position:absolute;inset:0;overflow:clip}
+.brands .city{position:sticky;top:0;display:block;width:100%;height:100vh;height:100svh;object-fit:cover;object-position:50% 50%}
+.brands .scrim{position:absolute;inset:0;background:rgba(7,5,8,.22)}
+.brands .lay{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px}
+.brands h2{grid-column:1 / span 5;color:var(--paper);align-self:start;max-width:14ch}
+.brands .credit{grid-column:1 / span 5;align-self:end;font-size:var(--t-small);color:var(--rose-2);max-width:36ch}
+.brands .sheet{grid-column:7 / span 6;grid-row:1 / span 2;max-width:640px;width:100%;padding:clamp(28px,4vw,64px) clamp(22px,3vw,48px) clamp(32px,4vw,64px);text-align:center;justify-self:end}
+html[dir=rtl] .brands .sheet{justify-self:start}
+.brands .sheet .shh{font-family:var(--font-en-display);font-weight:800;font-size:var(--t-claim);letter-spacing:-.02em;line-height:1.05}
+html[dir=rtl] .brands .sheet .shh{font-family:var(--font-ar-display);font-weight:700;letter-spacing:0;line-height:1.3}
+.brands .sheet .note{font-size:var(--t-small);color:var(--ink-2);margin-top:10px}
+.brands .group{margin-top:44px}
+.brands .group h3{font-size:var(--t-lead)}
+.brands .group ul{margin-top:12px;max-width:420px;margin-inline:auto;text-align:start}
+.brands .group li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding-block:8px}
+.brands .group .n{font-family:var(--font-en-display);font-weight:600}
+.brands .group .d{font-family:var(--font-en-display);font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+html[dir=rtl] .brands .group .d{text-align:left}
+.brands .group .a{grid-column:1 / -1;font-size:var(--t-small);color:var(--ink-2);font-family:var(--font-ar-text);text-align:start}
+.brands .close{margin-top:48px;font-size:var(--t-small);color:var(--ink-2)}
+
+/* about: two columns, highlighted words */
+.about{margin-top:calc(var(--serr) + clamp(40px,6vw,96px))}
+.about .sheet{padding:clamp(56px,8vw,120px) clamp(20px,4vw,64px)}
+.about h2{max-width:14ch}
+.about .story{margin-top:clamp(24px,3vw,40px);columns:2;column-gap:40px;font-size:clamp(1.25rem,0.95rem + 0.95vw,1.75rem);line-height:1.26;color:var(--ink-2);hyphens:auto}
+html[dir=rtl] .about .story{line-height:1.7;hyphens:manual}
+.about .story b{color:var(--ink);font-weight:600}
+.about .story mark{background:var(--rose);color:var(--maroon-ink);padding:0 .1em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.about .story mark.deep{background:var(--maroon);color:var(--paper)}
+.about .story a{text-decoration:none}
+@media(hover:hover) and (pointer:fine){.about .story a:hover mark.deep{background:var(--maroon-deep)}}
+
+/* cta: one word is the button */
+.cta{display:block;margin-top:calc(var(--serr) + clamp(40px,6vw,96px));background:var(--paper);color:var(--maroon);text-decoration:none;position:relative;overflow:hidden;transition:background-color 120ms ease,color 120ms ease}
+.cta .frame{position:relative;display:grid;grid-template-rows:auto auto;padding-block:28px 24px}
+.cta .top{display:flex;justify-content:space-between;gap:24px;align-items:start}
+.cta .top p{max-width:32ch;font-size:var(--t-lead);line-height:1.3;color:inherit}
+.cta .top svg{width:48px;height:48px;flex:none}
+.cta .word{align-self:end;margin-top:clamp(32px,6vh,72px);font-family:var(--font-en-display);font-weight:800;font-size:clamp(7rem,33.5vw,30rem);line-height:.92;letter-spacing:-.04em;margin-bottom:-.02em}
+html[dir=rtl] .cta .word{font-family:var(--font-ar-display);font-weight:700;letter-spacing:0;line-height:1.1;margin-bottom:0;padding-bottom:.12em;font-size:clamp(7rem,30vw,27rem)}
+@media(hover:hover) and (pointer:fine){.cta:hover,.cta:focus-visible{background:var(--maroon);color:var(--paper)}}
+
+/* footer: contact as the headline */
+footer{background:var(--maroon-ink);color:var(--paper);display:flex;flex-direction:column}
+footer .frame{display:flex;flex-direction:column;flex:1;padding-block:40px 28px;width:100%}
+footer .notes{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:24px;font-size:var(--t-small);color:var(--rose-2)}
+footer .notes p{grid-column:span 4;max-width:36ch}
+footer .notes .top{grid-column:11 / span 2;justify-self:end;white-space:nowrap}
+html[dir=rtl] footer .notes .top{justify-self:start}
+footer .contact{margin-top:auto;padding-top:clamp(72px,14vh,140px)}
+footer .contact a{display:block;font-family:var(--font-en-display);font-weight:800;font-size:clamp(2.6rem,9vw,8.5rem);line-height:.95;letter-spacing:-.03em;text-decoration:none;color:var(--paper);direction:ltr;text-align:left;overflow-wrap:anywhere}
+html[dir=rtl] footer .contact a{text-align:right}
+@media(hover:hover) and (pointer:fine){footer .contact a:hover{color:var(--rose)}}
+footer .meta{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;margin-top:40px;font-size:var(--t-small);color:var(--rose-2)}
+footer .meta .links{display:flex;gap:18px;flex-wrap:wrap}
+footer .meta .links a{text-decoration:none}
+@media(hover:hover) and (pointer:fine){footer .meta .links a:hover{color:#fff}}
+footer .meta .year{text-align:end}
+
+/* motion */
+@media(prefers-reduced-motion:no-preference){
+  .js .hero [data-line]{transform:translateY(105%);animation:line-up 900ms var(--ease-expo) forwards;animation-delay:calc(var(--i) * 110ms + 150ms)}
+  .js .hero [data-load]{opacity:0;transform:translateY(12px);animation:load-rise 500ms var(--ease-out) forwards;animation-delay:var(--d)}
+  .js [data-reveal]{opacity:0;transform:translateY(22px);transition:opacity 600ms var(--ease-out),transform 800ms var(--ease-expo);transition-delay:var(--d,0ms)}
+  .js [data-reveal].is-in{opacity:1;transform:none}
+  .js .register .row{opacity:0;transform:translateY(10px);transition:opacity 500ms var(--ease-out),transform 600ms var(--ease-out)}
+  .js .register .row.is-in,.js .register.is-in .row{opacity:1;transform:none}
+  .js .register.is-in .row{transition-delay:calc(var(--i,0) * 60ms)}
+  .js .stats .series i{transform:scaleY(0);transition:transform 900ms var(--ease-expo);transition-delay:calc(var(--i,0) * 40ms)}
+  .js .stats.is-in .series i{transform:none}
+  .js .diagram rect{opacity:0;transition:opacity 500ms var(--ease-out);transition-delay:calc(var(--i,0) * 6ms)}
+  .js .method.is-in .diagram rect{opacity:1}
+  .js .plate img{transform:scale(1.06);transition:transform 1500ms var(--ease-soft)}
+  .js .plate.is-in img{transform:none}
+  .js .brands .city{transform:scale(1.08);transition:transform 1600ms var(--ease-soft)}
+  .js .brands.is-in .city{transform:none}
+}
+@keyframes line-up{to{transform:none}}
+@keyframes load-rise{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.showcase .ticker ul{animation:none}}
+
+/* widths */
+@media(max-width:1100px){
+  .method .intro{grid-template-columns:1fr}
+  .method .intro h2,.method .intro p{grid-column:auto}
+  .features .lay{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 32px}
+  .features h2{grid-column:1 / -1;text-align:start}
+  html[dir=rtl] .features h2{text-align:start}
+  .panel{grid-column:1 / -1;grid-row:auto;max-width:420px;justify-self:start;order:1}
+  .features .note{order:2}
+  html[dir=rtl] .panel{justify-self:end}
+  .features .note.left,.features .note.right{grid-column:auto;justify-self:start;text-align:start;max-width:30ch}
+  html[dir=rtl] .features .note.left,html[dir=rtl] .features .note.right{text-align:start}
+  .brands .lay{grid-template-columns:1fr}
+  .brands h2,.brands .credit,.brands .sheet{grid-column:1;grid-row:auto}
+  .brands .sheet{justify-self:center;max-width:720px}
+  html[dir=rtl] .brands .sheet{justify-self:center}
+  .brands .credit{margin-top:16px}
+  footer .notes p{grid-column:span 6}
+  footer .notes .top{grid-column:1 / -1;justify-self:start}
+}
+@media(max-width:760px){
+  :root{--serr:14px}
+  .nav .frame{flex-wrap:wrap;row-gap:10px;padding-block:14px}
+  .nav nav{order:3;flex:1 1 100%;gap:18px}
+  .nav .actions .btn{display:none}
+  .hero .sheet{margin-top:calc(var(--serr) + 12px)}
+  .masthead{grid-template-columns:1fr}
+  html[dir=rtl] .masthead{grid-template-columns:1fr}
+  .masthead .title[lang=ar]{text-align:start}
+  .hero h1{font-size:clamp(2.4rem,11.5vw,3.2rem);max-width:none}
+  .lookup .row .btn{flex:1 1 100%}
+  .register .legend{display:none}
+  .register .row{grid-template-columns:5ch minmax(0,1fr) auto;gap:0 12px}
+  .register .k,.register .l,.register .i{display:none}
+  .stats{min-height:80svh}
+  .stats h2{font-size:1.75rem}
+  .stats .figure{grid-template-columns:1fr;margin-top:48px}
+  .stats .big{font-size:clamp(4rem,23vw,6.5rem)}
+  .stats .big sup{font-size:.22em}
+  .stats .caption{max-width:80%}
+  .stats .source{text-align:start;margin-top:24px}
+  .diagram.wide{display:none}
+  .diagram.stage{display:block;width:100%;height:auto;margin:0;align-self:center}
+  .method .body{margin-top:24px}
+  .method .cols{display:grid;grid-template-columns:34% minmax(0,1fr);gap:18px 16px;align-items:center;margin-top:0}
+  .method .cols h3{font-size:var(--t-body)}
+  .method .cols p{font-size:var(--t-small);margin-top:4px}
+  .showcase{min-height:72svh}
+  .showcase .frame{min-height:72svh}
+  .showcase .ticker{top:38%}
+  .switch{right:auto;left:var(--gutter);bottom:-3%;font-size:min(58vw,34vh)}
+  html[dir=rtl] .switch{left:auto;right:var(--gutter)}
+  .about .story{columns:1;font-size:1.25rem;line-height:1.3}
+  .cta .top p{font-size:1.0625rem}
+  .cta .top svg{width:32px;height:32px}
+  .cta .word{font-size:36vw}
+  footer .notes{grid-template-columns:1fr;gap:14px}
+  footer .notes p{grid-column:auto;max-width:none}
+  footer .contact{padding-top:72px}
+  footer .contact a{font-size:clamp(2.2rem,12vw,3.6rem)}
+  footer .meta{grid-template-columns:1fr;margin-top:32px}
+  footer .meta .year{text-align:start}
+}
 </style>
 </head>
 <body>
-<header><div class="nav">
-  <a class="brand" href="./">QA<span>CyberWatch</span></a>
-  <nav class="links" aria-label="Sections">
-    <a href="#features"><span data-lang="en">Features</span><span data-lang="ar">المزايا</span></a>
-    <a href="#how"><span data-lang="en">How it works</span><span data-lang="ar">كيف تعمل</span></a>
-    <a href="#qatar"><span data-lang="en">Qatar</span><span data-lang="ar">قطر</span></a>
-    <a href="#screens"><span data-lang="en">Screens</span><span data-lang="ar">الشاشات</span></a>
-    <a href="#selfhost"><span data-lang="en">Self-host</span><span data-lang="ar">الاستضافة الذاتية</span></a>
-  </nav>
-  <div class="actions">
-    <div class="lang" role="group" aria-label="Language"><button id="btnEn" class="on" type="button" lang="en">EN</button><button id="btnAr" type="button" lang="ar">العربية</button></div>
-    <a class="btn ghost sm github" href="https://github.com/SiteQ8/QACyberWatch">GitHub</a>
-    <a class="btn primary sm" href="demo/"><span data-lang="en">Open the console</span><span data-lang="ar">افتح وحدة التحكم</span></a>
-  </div>
-</div></header>
-<main>
-<div class="hero">
-  <div>
-    <div class="eyebrow" data-lang="en">Live · open source · runs in your browser</div><div class="eyebrow" data-lang="ar">مباشر ومفتوح المصدر ويعمل في متصفحك</div>
-    <h1 data-lang="en">Phishing detection and brand protection for the State of Qatar</h1><h1 data-lang="ar">رصد التصيد وحماية العلامات التجارية في دولة قطر</h1>
-    <p class="lead" data-lang="en">QACyberWatch reads Certificate Transparency logs the moment certificates are issued, hunts look-alikes of Qatari banks, payment services, telecoms and government services in Latin and Arabic script, and turns every candidate into a triaged alert. No third-party feed. Nothing leaves your browser.</p>
-    <p class="lead" data-lang="ar">يقرأ QACyberWatch سجلات شفافية الشهادات لحظة إصدار الشهادة، ويبحث عن النطاقات المشابهة لأسماء البنوك القطرية وخدمات الدفع وشركات الاتصالات والجهات الحكومية بالحروف اللاتينية والعربية، ثم يحوّل كل نطاق مشتبه به إلى تنبيه جاهز للمراجعة من غير الاعتماد على أي مزوّد خارجي ومن غير أن تغادر بياناتك المتصفح.</p>
-    <div class="cta"><a class="btn primary" href="demo/"><span data-lang="en">Open the live console</span><span data-lang="ar">افتح وحدة التحكم المباشرة</span></a><a class="btn ghost" href="https://github.com/SiteQ8/QACyberWatch"><span data-lang="en">Source on GitHub</span><span data-lang="ar">المصدر على GitHub</span></a></div>
-    <div class="stats">
-      <div class="stat"><b>34</b><span data-lang="en">brand profiles</span><span data-lang="ar">علامة محمية</span></div>
-      <div class="stat"><b>94</b><span data-lang="en">Qatar keywords</span><span data-lang="ar">كلمة مفتاحية قطرية</span></div>
-      <div class="stat"><b>2</b><span data-lang="en">CT log APIs</span><span data-lang="ar">واجهتان لسجلات الشهادات</span></div>
-      <div class="stat"><b>450+</b><span data-lang="en">tests</span><span data-lang="ar">اختبار</span></div>
+<header class="nav">
+  <div class="frame">
+    <a class="brand" href="./">QA<span>CyberWatch</span></a>
+    <nav aria-label="Sections">
+      <a href="#register"><span data-lang="en">Register</span><span data-lang="ar">السجل</span></a>
+      <a href="#method"><span data-lang="en">Method</span><span data-lang="ar">الطريقة</span></a>
+      <a href="#brands"><span data-lang="en">Brands</span><span data-lang="ar">الأسماء</span></a>
+      <a href="https://github.com/SiteQ8/QACyberWatch"><span data-lang="en">Source</span><span data-lang="ar">المصدر</span></a>
+    </nav>
+    <div class="actions">
+      <div class="lang" role="group" aria-label="Language"><button type="button" id="btnEn" lang="en" aria-pressed="true">EN</button><button type="button" id="btnAr" lang="ar" aria-pressed="false">العربية</button></div>
+      <a class="btn" href="demo/"><span data-lang="en">Open the console</span><span data-lang="ar">افتح وحدة التحكم</span></a>
     </div>
   </div>
-  <div><img src="docs/screenshots/02-dashboard.png" alt="QACyberWatch dashboard"></div>
+</header>
+
+<main>
+<section class="hero" id="register" aria-labelledby="h1">
+  <div class="frame">
+    <div class="sheet top">
+      <div class="masthead">
+        <p class="title" lang="en"><span>Register of certificates issued for Qatar's names</span></p>
+        <p class="title" lang="ar">سجل الشهادات الصادرة لأسماء قطر</p>
+        <div class="bar" aria-hidden="true"></div>
+      </div>
+      <h1 id="h1" class="lines">
+        <span data-lang="en"><span class="line"><span data-line style="--i:0">Seen before</span></span><span class="line"><span data-line style="--i:1">the first phish</span></span></span>
+        <span data-lang="ar"><span class="line"><span data-line style="--i:0">يُرصد قبل</span></span><span class="line"><span data-line style="--i:1">أول رسالة تصيّد</span></span></span>
+      </h1>
+      <p class="support" data-load style="--d:420ms"><span data-lang="en">Every certificate issued for a Qatari name, read from the public logs as it is written and scored for impersonation.</span><span data-lang="ar">كل شهادة تصدر لاسم قطري تُقرأ من السجلات العامة لحظة كتابتها وتُقيَّم لاحتمال انتحال الهوية.</span></p>
+
+      <form class="lookup" id="lookup" action="demo/#page=scanner" method="get" data-load style="--d:480ms">
+        <label for="q"><span data-lang="en">Look up a name in the register</span><span data-lang="ar">ابحث عن اسم في السجل</span></label>
+        <div class="row">
+          <input id="q" name="scan" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sadad-pay-qa.top" required>
+          <button class="btn inverse" type="submit"><span data-lang="en">Look up</span><span data-lang="ar">ابحث</span></button>
+        </div>
+        <output class="verdict" id="verdict" for="q" aria-live="polite"></output>
+      </form>
+
+      <div class="register" id="latest" data-ui>
+        <h2><span data-lang="en">Latest entries from the relay</span><span data-lang="ar">آخر القيود من المرحّل</span></h2>
+        <p class="issue"><span data-lang="en">Issue <span class="num" data-issue>15</span>, <span data-date-en>Friday 30 October 2026</span>, read from <span class="num" data-logs>41</span> public logs</span><span data-lang="ar">العدد <span class="num" data-issue>15</span>، <span data-date-ar>الجمعة 30 أكتوبر 2026</span>، مقروء من <span class="num" data-logs>41</span> سجلاً عاماً</span></p>
+        <div class="legend" aria-hidden="true"><span><span data-lang="en">Doha</span><span data-lang="ar">الدوحة</span></span><span><span data-lang="en">Name</span><span data-lang="ar">الاسم</span></span><span><span data-lang="en">Keyword</span><span data-lang="ar">الكلمة</span></span><span><span data-lang="en">Log</span><span data-lang="ar">السجل</span></span><span><span data-lang="en">Issuer</span><span data-lang="ar">المُصدر</span></span><span style="text-align:end"><span data-lang="en">Verdict</span><span data-lang="ar">الحكم</span></span></div>
+        <ul id="rows">
+          <li class="row lv-low"><span class="t">03:32</span><span class="h" dir="ltr">kvuen4.mesh.mongodbgov-qa.net</span><span class="k" dir="ltr">gov-qa</span><span class="l">TrustAsia Luoshu2027</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">low</span><span data-lang="ar">منخفض</span></span></li>
+          <li class="row lv-low"><span class="t">03:32</span><span class="h" dir="ltr">b6298be137adf2301c66a64c.kvuen4.mongodbgov-qa.net</span><span class="k" dir="ltr">gov-qa</span><span class="l">TrustAsia Luoshu2027</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">low</span><span data-lang="ar">منخفض</span></span></li>
+          <li class="row lv-clean"><span class="t">03:32</span><span class="h" dir="ltr">kvuen4.mongodbgov-qa.net</span><span class="k" dir="ltr">gov-qa</span><span class="l">TrustAsia Luoshu2027</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">clean</span><span data-lang="ar">نظيف</span></span></li>
+          <li class="row lv-clean"><span class="t">03:31</span><span class="h" dir="ltr">www.qibeq.ph</span><span class="k" dir="ltr">qib</span><span class="l">Geomys Trastevere2027h1</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">clean</span><span data-lang="ar">نظيف</span></span></li>
+          <li class="row lv-low"><span class="t">03:30</span><span class="h" dir="ltr">qatarairways.armorheatmonitor.com</span><span class="k" dir="ltr">qatar, qatarairways</span><span class="l">Google PlumbersArms2027h1</span><span class="i">DigiCert Inc</span><span class="v"><span data-lang="en">low</span><span data-lang="ar">منخفض</span></span></li>
+          <li class="row lv-low"><span class="t">03:28</span><span class="h" dir="ltr">16fd037750c126d6dd489f98.gpqsnr.mongodbgov-qa.net</span><span class="k" dir="ltr">gov-qa</span><span class="l">Google Xenon2027h1</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">low</span><span data-lang="ar">منخفض</span></span></li>
+          <li class="row lv-clean"><span class="t">03:28</span><span class="h" dir="ltr">rqpay.sberbank.cbae0capochta.9sber.emagid14-832f-4254-9ec4-7581ed6d2b66.lomberd.com</span><span class="k" dir="ltr">qpay</span><span class="l">Let's Encrypt Sycamore2026h2</span><span class="i">ZeroSSL GmbH</span><span class="v"><span data-lang="en">clean</span><span data-lang="ar">نظيف</span></span></li>
+          <li class="row lv-clean"><span class="t">03:27</span><span class="h" dir="ltr">gmxtqcb-xc22414.ca-central-1.aws.snowflake.com</span><span class="k" dir="ltr">qcb</span><span class="l">DigiCert Sphinx2026h2</span><span class="i">Let's Encrypt</span><span class="v"><span data-lang="en">clean</span><span data-lang="ar">نظيف</span></span></li>
+        </ul>
+        <p class="foot"><span data-lang="en">Last run: <span data-run-en><span class="num">158,861</span> certificates read in <span class="num">25</span> minutes, <span class="num">43</span> matched</span>. Every verdict is an automated heuristic from public data, a candidate for review and never an accusation.</span><span data-lang="ar">آخر تشغيل: <span data-run-ar>قُرئت <span class="num">158,861</span> شهادة في <span class="num">25</span> دقيقة وطابقت منها <span class="num">43</span></span>، وكل حكم هنا استدلال آلي من بيانات عامة يستحق المراجعة وليس اتهاماً.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="figure" aria-labelledby="h-figure">
+  <div class="frame">
+    <h2 id="h-figure" data-reveal><span data-lang="en">Fifteen days of reading</span><span data-lang="ar">خمسة عشر يوماً من القراءة</span></h2>
+  </div>
+  <div class="frame">
+    <div class="figure">
+      <div>
+        <div class="big" data-reveal><span data-matches>3,613</span><sup><span data-lang="en">names</span><span data-lang="ar">اسماً</span></sup></div>
+        <p class="caption" data-reveal style="--d:120ms"><span data-lang="en">Hostnames the relay matched between <span data-window-en>16 and 30 October 2026</span> among certificates issued for names that carry a Qatar keyword or end in .qa, read from <span class="num" data-logs>41</span> public logs. <span class="num" data-medium>415</span> of them scored medium or above.</span><span data-lang="ar">أسماء مضيفين طابقها المرحّل بين <span data-window-ar>16 و30 أكتوبر 2026</span> من بين الشهادات الصادرة لأسماء تحمل كلمة قطرية أو تنتهي بـ ‎.qa‎ ومقروءة من <span class="num" data-logs>41</span> سجلاً عاماً، ومنها <span class="num" data-medium>415</span> اسماً بدرجة متوسطة فأعلى.</span></p>
+        <div class="series" id="series" aria-hidden="true"></div>
+      </div>
+      <p class="source" data-reveal style="--d:200ms"><span data-lang="en">From the relay archive, refreshed after every run</span><span data-lang="ar">من أرشيف المرحّل ويتجدد بعد كل تشغيل</span></p>
+    </div>
+  </div>
+</section>
+
+<section class="method" id="method" aria-labelledby="h-method">
+  <div class="frame">
+    <div class="sheet top bottom">
+      <div class="intro">
+        <h2 id="h-method" data-reveal><span data-lang="en">Read, score, triage</span><span data-lang="ar">قراءة وتقييم وفرز</span></h2>
+        <p data-reveal style="--d:120ms"><span data-lang="en">Every certificate browsers trust is written to a public log first. The tailer reads those logs directly, the engine scores each name, and the analyst works the few that matter.</span><span data-lang="ar">كل شهادة تثق بها المتصفحات تُكتب أولاً في سجل عام، فيقرأ التتبّع تلك السجلات مباشرة ويقيّم المحرك كل اسم ثم يعمل المحلل على القليل الذي يستحق.</span></p>
+      </div>
+      <svg class="diagram wide" viewBox="0 0 1200 266" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+      <rect x="185.4" y="176.3" width="12" height="12" class="q2"/>
+      <rect x="42.4" y="172.6" width="12" height="12" class="q1"/>
+      <rect x="23.1" y="86.6" width="12" height="12" class="q1"/>
+      <rect x="194.0" y="19.6" width="12" height="12" class="q2"/>
+      <rect x="33.5" y="112.4" width="12" height="12" class="q1"/>
+      <rect x="249.2" y="116.1" width="12" height="12" class="q1"/>
+      <rect x="302.0" y="47.2" width="12" height="12" class="q2"/>
+      <rect x="344.6" y="205.0" width="12" height="12" class="q1"/>
+      <rect x="272.8" y="60.5" width="12" height="12" class="q1"/>
+      <rect x="279.6" y="172.1" width="12" height="12" class="q2"/>
+      <rect x="285.5" y="136.1" width="12" height="12" class="q1"/>
+      <rect x="290.7" y="218.1" width="12" height="12" class="q1"/>
+      <rect x="33.1" y="211.9" width="12" height="12" class="q2"/>
+      <rect x="13.0" y="70.9" width="12" height="12" class="q1"/>
+      <rect x="285.1" y="75.5" width="12" height="12" class="q1"/>
+      <rect x="77.8" y="8.0" width="12" height="12" class="q2"/>
+      <rect x="358.8" y="148.5" width="12" height="12" class="q1"/>
+      <rect x="61.8" y="24.9" width="12" height="12" class="q1"/>
+      <rect x="310.1" y="38.9" width="12" height="12" class="q2"/>
+      <rect x="155.5" y="30.5" width="12" height="12" class="q1"/>
+      <rect x="132.5" y="167.6" width="12" height="12" class="q1"/>
+      <rect x="57.9" y="149.0" width="12" height="12" class="q2"/>
+      <rect x="237.8" y="99.1" width="12" height="12" class="q1"/>
+      <rect x="274.1" y="208.5" width="12" height="12" class="q1"/>
+      <rect x="84.3" y="244.0" width="12" height="12" class="q2"/>
+      <rect x="108.1" y="192.0" width="12" height="12" class="q1"/>
+      <rect x="88.1" y="199.9" width="12" height="12" class="q1"/>
+      <rect x="72.6" y="81.8" width="12" height="12" class="q2"/>
+      <rect x="294.1" y="207.6" width="12" height="12" class="q1"/>
+      <rect x="159.4" y="128.1" width="12" height="12" class="q1"/>
+      <rect x="249.9" y="174.2" width="12" height="12" class="q2"/>
+      <rect x="82.0" y="104.5" width="12" height="12" class="q1"/>
+      <rect x="92.9" y="208.8" width="12" height="12" class="q1"/>
+      <rect x="71.0" y="101.1" width="12" height="12" class="q2"/>
+      <rect x="85.8" y="224.9" width="12" height="12" class="q1"/>
+      <rect x="231.7" y="129.1" width="12" height="12" class="q1"/>
+      <rect x="34.5" y="61.6" width="12" height="12" class="q2"/>
+      <rect x="327.1" y="12.6" width="12" height="12" class="q1"/>
+      <rect x="266.6" y="15.0" width="12" height="12" class="q1"/>
+      <rect x="263.2" y="63.5" width="12" height="12" class="q2"/>
+      <rect x="21.0" y="221.7" width="12" height="12" class="q1"/>
+      <rect x="226.6" y="182.1" width="12" height="12" class="q1"/>
+      <rect x="192.2" y="76.7" width="12" height="12" class="q2"/>
+      <rect x="228.6" y="241.6" width="12" height="12" class="q1"/>
+      <rect x="45.6" y="155.1" width="12" height="12" class="q1"/>
+      <rect x="301.0" y="187.2" width="12" height="12" class="q2"/>
+      <rect x="59.1" y="201.7" width="12" height="12" class="q1"/>
+      <rect x="55.3" y="110.5" width="12" height="12" class="q1"/>
+      <rect x="8.0" y="64.9" width="12" height="12" class="q2"/>
+      <rect x="258.0" y="24.0" width="12" height="12" class="q1"/>
+      <rect x="346.6" y="144.5" width="12" height="12" class="q1"/>
+      <rect x="288.3" y="54.5" width="12" height="12" class="q2"/>
+      <rect x="79.6" y="55.1" width="12" height="12" class="q1"/>
+      <rect x="286.1" y="196.8" width="12" height="12" class="q1"/>
+      <rect x="424.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="424.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="424.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="439.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="439.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="439.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="454.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="454.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="454.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="469.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="469.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="469.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="484.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="484.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="484.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="499.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="499.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="499.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="514.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="514.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="514.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="529.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="529.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="529.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="544.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="544.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="544.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="559.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="559.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="559.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="574.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="574.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="574.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="589.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="589.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="589.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="604.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="604.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="604.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="619.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="619.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="619.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="634.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="634.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="634.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="649.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="649.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="649.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="664.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="664.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="664.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="679.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="679.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="679.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="694.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="694.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="694.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="709.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="709.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="709.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="724.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="724.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="724.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="739.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="739.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="739.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="754.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="754.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="754.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="769.0" y="111.0" width="12" height="12" class="q3"/>
+      <rect x="769.0" y="126.0" width="12" height="12" class="q3"/>
+      <rect x="769.0" y="141.0" width="12" height="12" class="q3"/>
+      <rect x="848.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="876.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="904.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="932.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="960.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="988.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="1016.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="1044.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="1072.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="1100.0" y="41.0" width="12" height="12" class="q4"/>
+      <rect x="848.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="876.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="904.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="932.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="960.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="988.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="1016.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="1044.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="1072.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="1100.0" y="81.0" width="12" height="12" class="q4"/>
+      <rect x="848.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="876.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="904.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="932.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="960.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="988.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="1016.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="1044.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="1072.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="1100.0" y="121.0" width="12" height="12" class="q4"/>
+      <rect x="848.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="876.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="904.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="932.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="960.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="988.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="1016.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="1044.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="1072.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="1100.0" y="161.0" width="12" height="12" class="q4"/>
+      <rect x="848.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="876.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="904.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="932.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="960.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="988.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="1016.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="1044.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="1072.0" y="201.0" width="12" height="12" class="q4"/>
+      <rect x="1100.0" y="201.0" width="12" height="12" class="q4"/>
+      </svg>
+
+      <div class="body">
+      <div class="cols">
+        <svg class="diagram stage s1" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <rect x="94.7" y="130.5" width="12" height="12" class="q2"/>
+        <rect x="23.2" y="127.7" width="12" height="12" class="q1"/>
+        <rect x="13.5" y="64.1" width="12" height="12" class="q1"/>
+        <rect x="99.0" y="14.6" width="12" height="12" class="q2"/>
+        <rect x="18.8" y="83.2" width="12" height="12" class="q1"/>
+        <rect x="126.6" y="85.9" width="12" height="12" class="q1"/>
+        <rect x="153.0" y="35.0" width="12" height="12" class="q2"/>
+        <rect x="174.3" y="151.7" width="12" height="12" class="q1"/>
+        <rect x="138.4" y="44.8" width="12" height="12" class="q1"/>
+        <rect x="141.8" y="127.4" width="12" height="12" class="q2"/>
+        <rect x="144.8" y="100.7" width="12" height="12" class="q1"/>
+        <rect x="147.4" y="161.4" width="12" height="12" class="q1"/>
+        <rect x="18.6" y="156.8" width="12" height="12" class="q2"/>
+        <rect x="8.5" y="52.5" width="12" height="12" class="q1"/>
+        <rect x="144.6" y="55.9" width="12" height="12" class="q1"/>
+        <rect x="40.9" y="6.0" width="12" height="12" class="q2"/>
+        <rect x="181.4" y="109.9" width="12" height="12" class="q1"/>
+        <rect x="32.9" y="18.5" width="12" height="12" class="q1"/>
+        <rect x="157.0" y="28.8" width="12" height="12" class="q2"/>
+        <rect x="79.8" y="22.6" width="12" height="12" class="q1"/>
+        <rect x="68.3" y="124.0" width="12" height="12" class="q1"/>
+        <rect x="31.0" y="110.2" width="12" height="12" class="q2"/>
+        <rect x="120.9" y="73.4" width="12" height="12" class="q1"/>
+        <rect x="139.0" y="154.3" width="12" height="12" class="q1"/>
+        <rect x="44.1" y="180.6" width="12" height="12" class="q2"/>
+        <rect x="56.0" y="142.1" width="12" height="12" class="q1"/>
+        <rect x="46.0" y="147.9" width="12" height="12" class="q1"/>
+        <rect x="38.3" y="60.6" width="12" height="12" class="q2"/>
+        <rect x="149.1" y="153.6" width="12" height="12" class="q1"/>
+        <rect x="81.7" y="94.8" width="12" height="12" class="q1"/>
+        <rect x="126.9" y="128.9" width="12" height="12" class="q2"/>
+        <rect x="43.0" y="77.4" width="12" height="12" class="q1"/>
+        <rect x="48.5" y="154.5" width="12" height="12" class="q1"/>
+        <rect x="37.5" y="74.9" width="12" height="12" class="q2"/>
+        <rect x="44.9" y="166.4" width="12" height="12" class="q1"/>
+        <rect x="117.9" y="95.6" width="12" height="12" class="q1"/>
+        <rect x="19.2" y="45.6" width="12" height="12" class="q2"/>
+        <rect x="165.6" y="9.4" width="12" height="12" class="q1"/>
+        <rect x="135.3" y="11.2" width="12" height="12" class="q1"/>
+        <rect x="133.6" y="47.1" width="12" height="12" class="q2"/>
+        <rect x="12.5" y="164.0" width="12" height="12" class="q1"/>
+        <rect x="115.3" y="134.7" width="12" height="12" class="q1"/>
+        <rect x="98.1" y="56.8" width="12" height="12" class="q2"/>
+        <rect x="116.3" y="178.8" width="12" height="12" class="q1"/>
+        </svg>
+        <div data-reveal><h3><span data-lang="en">Read</span><span data-lang="ar">القراءة</span></h3><p><span data-lang="en">RFC 6962 and Static CT API logs, every shard that can still receive a new certificate, with a built-in X.509 reader.</span><span data-lang="ar">سجلات RFC 6962 وStatic CT API وكل جزء ما زال يستقبل شهادات جديدة، بقارئ X.509 مدمج.</span></p></div>
+        <svg class="diagram stage s2" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <rect x="10.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="25.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="40.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="55.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="70.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="85.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="100.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="115.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="130.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="145.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="160.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="175.0" y="78.0" width="12" height="12" class="q3"/>
+        <rect x="10.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="25.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="40.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="55.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="70.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="85.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="100.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="115.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="130.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="145.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="160.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="175.0" y="93.0" width="12" height="12" class="q3"/>
+        <rect x="10.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="25.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="40.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="55.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="70.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="85.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="100.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="115.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="130.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="145.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="160.0" y="108.0" width="12" height="12" class="q3"/>
+        <rect x="175.0" y="108.0" width="12" height="12" class="q3"/>
+        </svg>
+        <div data-reveal style="--d:90ms"><h3><span data-lang="en">Score</span><span data-lang="ar">التقييم</span></h3><p><span data-lang="en">Thirty-four Qatari brand profiles, 94 keywords in Latin and Arabic script, homoglyphs, lure words, risky endings and hosting platforms.</span><span data-lang="ar">أربع وثلاثون علامة قطرية و94 كلمة مفتاحية بالحرفين اللاتيني والعربي والأحرف المتشابهة وكلمات الإغراء والنهايات الخطرة ومنصات الاستضافة.</span></p></div>
+        <svg class="diagram stage s3" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <rect x="16.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="48.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="80.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="112.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="144.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="176.0" y="28.0" width="12" height="12" class="q4"/>
+        <rect x="16.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="48.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="80.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="112.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="144.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="176.0" y="60.0" width="12" height="12" class="q4"/>
+        <rect x="16.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="48.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="80.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="112.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="144.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="176.0" y="92.0" width="12" height="12" class="q4"/>
+        <rect x="16.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="48.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="80.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="112.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="144.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="176.0" y="124.0" width="12" height="12" class="q4"/>
+        <rect x="16.0" y="156.0" width="12" height="12" class="q4"/>
+        <rect x="48.0" y="156.0" width="12" height="12" class="q4"/>
+        <rect x="80.0" y="156.0" width="12" height="12" class="q4"/>
+        <rect x="112.0" y="156.0" width="12" height="12" class="q4"/>
+        <rect x="144.0" y="156.0" width="12" height="12" class="q4"/>
+        <rect x="176.0" y="156.0" width="12" height="12" class="q4"/>
+        </svg>
+        <div data-reveal style="--d:180ms"><h3><span data-lang="en">Triage</span><span data-lang="ar">الفرز</span></h3><p><span data-lang="en">Alerts with evidence, a diff against the real name, DNS and registration age, then STIX and CSV when handing off.</span><span data-lang="ar">تنبيهات مع الأدلة ومقارنة بالاسم الحقيقي وبيانات DNS وعمر التسجيل، ثم تصدير STIX وCSV عند التسليم.</span></p></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="plate">
+  <figure>
+    <img src="assets/islamicartmuseumdohaskyline.jpg" width="1000" height="675" loading="lazy" decoding="async" alt="The Museum of Islamic Art in Doha at dusk, with the towers of West Bay across the water">
+    <figcaption><span data-lang="en">Doha: the Museum of Islamic Art, with West Bay across the water. Photograph by Mohamod Fasil, CC BY 2.0, via Wikimedia Commons.</span><span data-lang="ar">الدوحة: متحف الفن الإسلامي والخليج الغربي عبر الماء، تصوير Mohamod Fasil برخصة CC BY 2.0 عبر ويكيميديا كومنز.</span></figcaption>
+  </figure>
 </div>
 
-<section id="qatar">
-  <h2 data-lang="en">A contribution to Qatar's cybersecurity maturity</h2><h2 data-lang="ar">مساهمة في نضج الأمن السيبراني في قطر</h2>
-  <p class="sub" data-lang="en">The sectors that scam campaigns target in Qatar are the sectors this engine knows by name: banks and the Himyan and NAPS payment infrastructure, Ooredoo and Vodafone Qatar, Hukoomi and Metrash, MOPH and HMC, Kahramaa and QatarEnergy, Qatar Airways and Qatar Post, the charities and the universities. The tool is independent and open, so any institution, NCSA, Q-CERT or a sector CERT can audit it, run it and extend it.</p>
-  <p class="sub" data-lang="ar">القطاعات التي تستهدفها حملات الاحتيال في قطر هي القطاعات التي يعرفها هذا المحرك بالاسم، فهو يحمي البنوك وبنية الدفع حميان وNAPS وأوريدو وفودافون قطر وحكومي ومطراش ووزارة الصحة ومؤسسة حمد الطبية وكهرماء وقطر للطاقة والخطوط الجوية القطرية وبريد قطر والجمعيات الخيرية والجامعات، وهو مستقل ومفتوح المصدر ليتمكن أي جهة أو الوكالة الوطنية للأمن السيبراني أو فرق الاستجابة القطاعية من مراجعته وتشغيله وتوسيعه.</p>
-  <div class="grid">
-    <div class="card"><h3 data-lang="en">Early warning</h3><h3 data-lang="ar">إنذار مبكر</h3><p data-lang="en">A look-alike becomes visible when its certificate is issued, often days before any lure reaches a victim.</p><p data-lang="ar">يظهر النطاق المشابه عند إصدار شهادته وغالباً قبل وصول أي رسالة احتيالية إلى الضحية بأيام.</p></div>
-    <div class="card"><h3 data-lang="en">Evidence, not opinions</h3><h3 data-lang="ar">أدلة لا آراء</h3><p data-lang="en">STIX 2.1 bundles, CSV, reports and syslog feed existing SOC tooling and incident records.</p><p data-lang="ar">تُغذّي حزم STIX 2.1 وملفات CSV والتقارير وسجلات syslog أدوات مركز العمليات الأمنية وسجلات الحوادث القائمة.</p></div>
-    <div class="card"><h3 data-lang="en">Arabic by design</h3><h3 data-lang="ar">العربية في الأساس</h3><p data-lang="en">Arabic brand names, Arabic lure words and mixed-script tricks are first-class inputs, not an afterthought.</p><p data-lang="ar">أسماء العلامات بالعربية وكلمات الإغراء العربية وحيل الخلط بين الأحرف مدخلات أساسية في المحرك وليست إضافة لاحقة.</p></div>
-    <div class="card"><h3 data-lang="en">Open to audit</h3><h3 data-lang="ar">قابل للتدقيق</h3><p data-lang="en">MIT licensed, 450+ tests, two engine implementations checked for identical verdicts. <a href="docs/qatar-alignment.md">Read the alignment note</a>.</p><p data-lang="ar">رخصة MIT وأكثر من 450 اختباراً وتطبيقان للمحرك يُفحصان للتأكد من تطابق أحكامهما، <a href="docs/qatar-alignment.md">واقرأ ورقة المواءمة</a>.</p></div>
+<section class="features" id="verdict-section" aria-labelledby="h-verdict">
+  <div class="frame">
+    <div class="lay">
+      <h2 id="h-verdict" data-reveal><span data-lang="en">One verdict, explained</span><span data-lang="ar">حكم واحد مشروح</span></h2>
+      <div class="note left" data-for="p-reg" data-reveal style="--d:80ms"><b><span data-lang="en">Registrable domain</span><span data-lang="ar">النطاق القابل للتسجيل</span></b><p><span data-lang="en">The engine knows the Qatari suffixes, so sadad.qa and sadad-pay-qa.top are never confused.</span><span data-lang="ar">يعرف المحرك النهايات القطرية فلا يخلط بين sadad.qa وsadad-pay-qa.top.</span></p></div>
+      <div class="note left" data-for="p-brand" data-reveal style="--d:160ms"><b><span data-lang="en">Brand match</span><span data-lang="ar">مطابقة العلامة</span></b><p><span data-lang="en">Sadad is a critical-priority payment brand, so its name in a label weighs more.</span><span data-lang="ar">سداد علامة دفع ذات أولوية حرجة فيزن اسمها في التسمية أكثر.</span></p></div>
+      <div class="note left" data-for="p-ind" data-reveal style="--d:240ms"><b><span data-lang="en">Lure words and context</span><span data-lang="ar">كلمات الإغراء والسياق</span></b><p><span data-lang="en">Pay and qa next to the brand are the combination scam pages use.</span><span data-lang="ar">كلمتا pay وqa بجوار العلامة هما التركيبة التي تستخدمها صفحات الاحتيال.</span></p></div>
+      <div class="note right" data-for="p-tld" data-reveal style="--d:80ms"><b><span data-lang="en">Risky ending</span><span data-lang="ar">نهاية خطرة</span></b><p><span data-lang="en">A brand name on an abuse-prone ending such as .top adds its own weight.</span><span data-lang="ar">اسم علامة على نهاية معرّضة للإساءة مثل ‎.top‎ يضيف وزناً خاصاً به.</span></p></div>
+      <div class="note right" data-for="p-diff" data-reveal style="--d:160ms"><b><span data-lang="en">Look-alike diff</span><span data-lang="ar">مقارنة التشابه</span></b><p><span data-lang="en">The official name beside the candidate, with the added parts marked.</span><span data-lang="ar">الاسم الرسمي بجوار الاسم المرشح مع تعليم الأجزاء المضافة.</span></p></div>
+      <div class="note right" data-for="p-act" data-reveal style="--d:240ms"><b><span data-lang="en">What happens next</span><span data-lang="ar">ما يحدث بعد ذلك</span></b><p><span data-lang="en">Open the alert in the console, allowlist a legitimate name, or copy the indicator.</span><span data-lang="ar">افتح التنبيه في وحدة التحكم أو أدرج اسماً مشروعاً في القائمة الآمنة أو انسخ المؤشر.</span></p></div>
+
+      <div class="panel" data-ui lang="en">
+        <div class="ph" data-part="p-reg"><div class="pd">sadad-pay-qa.top</div><div class="pl">high, 73 of 100</div></div>
+        <div class="pbar" aria-hidden="true"><b></b></div>
+        <div class="pk" data-part="p-reg"><b>Registrable domain</b><span>sadad-pay-qa.top, suffix .top, two labels, not an IDN</span></div>
+        <div class="pk" data-part="p-brand"><b>Matched brand</b><span>Sadad Qatar (payments, critical priority), official sadad.qa</span></div>
+        <div class="pk" data-part="p-ind"><b>Indicators</b>
+          <ul class="pi">
+            <li><span>Brand sadad combined with pay, qa</span><em>+35</em></li>
+            <li><span>Critical-priority protected brand</span><em>+10</em></li>
+            <li data-part="p-tld"><span>Medium-risk TLD .top</span><em>+10</em></li>
+            <li data-part="p-tld"><span>Brand on an abuse-prone TLD</span><em>+8</em></li>
+            <li><span>TLD-like token inside a label: qa</span><em>+10</em></li>
+          </ul>
+        </div>
+        <div class="pdiff" data-part="p-diff"><b style="display:block;font-weight:600;color:var(--ink-2)">Look-alike diff</b><div>sadad.qa</div><div>sadad<mark>-pay-qa</mark>.<mark>top</mark></div></div>
+        <div class="pk" data-part="p-act"><b>Recommendation</b><span>High priority: add to the blocklist, check the registration and notify the brand's security team.</span></div>
+        <div class="pact" data-part="p-act"><a class="btn inverse" href="demo/#scan=sadad-pay-qa.top">Open in the console</a><button class="btn ghost" type="button" data-copy="sadad-pay-qa.top">Copy IOC</button></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section id="features">
-  <h2 data-lang="en">Built for analysts, not demos</h2><h2 data-lang="ar">صُمم للمحللين لا للعروض</h2>
-  <p class="sub" data-lang="en">Every number in the console comes from real Certificate Transparency entries, real DNS answers and real registration data. The full detection engine is ported to JavaScript and parity-tested against the Python backend.</p>
-  <p class="sub" data-lang="ar">كل رقم في وحدة التحكم مصدره إدخالات حقيقية من سجلات الشهادات وإجابات DNS حقيقية وبيانات تسجيل حقيقية، وقد نُقل المحرك كاملاً إلى JavaScript واختُبر تطابقه مع الخلفية المكتوبة بلغة Python.</p>
-  <div class="grid">
-    <div class="card"><h3 data-lang="en">Direct CT log tailing</h3><h3 data-lang="ar">قراءة مباشرة لسجلات الشهادات</h3><p data-lang="en">Reads RFC 6962 and Static CT API logs itself, parses every DER certificate with a built-in reader, and reads every shard that newly issued certificates can land in.</p><p data-lang="ar">يقرأ سجلات RFC 6962 وسجلات Static CT API بنفسه ويحلل كل شهادة DER بقارئ مدمج، ويتابع كل الأجزاء التي قد تصل إليها الشهادات الجديدة.</p></div>
-    <div class="card"><h3 data-lang="en">Typosquat Hunter and Watchtower</h3><h3 data-lang="ar">صائد الأخطاء الإملائية وبرج المراقبة</h3><p data-lang="en">Generates typos, homoglyphs, leet, combo-squats and TLD swaps for any brand, resolves them over DNS-over-HTTPS and sweeps protected brands on a schedule.</p><p data-lang="ar">يولّد الأخطاء الإملائية والأحرف المتشابهة والتركيبات وتبديل النطاقات العليا لأي علامة، ثم يحلّها عبر DNS over HTTPS ويمسح العلامات المحمية وفق جدول زمني.</p></div>
-    <div class="card"><h3 data-lang="en">IDN and Arabic aware engine</h3><h3 data-lang="ar">محرك يفهم النطاقات الدولية والعربية</h3><p data-lang="en">Detects Cyrillic homoglyphs, mixed scripts and Arabic lures such as الريان-تحديث, with a character inspector and a look-alike diff for every verdict.</p><p data-lang="ar">يكشف الأحرف السيريلية المتشابهة والخلط بين الأحرف والإغراءات العربية مثل الريان-تحديث، مع فاحص للأحرف ومقارنة بصرية لكل حكم.</p></div>
-    <div class="card"><h3 data-lang="en">Honest scoring</h3><h3 data-lang="ar">تقييم أمين</h3><p data-lang="en">A hosting platform counts once, a leading www is neutral, short keywords stay at label edges, and every finding is a candidate for review.</p><p data-lang="ar">تُحتسب منصة الاستضافة مرة واحدة ولا يؤثر البادئ www في النتيجة وتبقى الكلمات القصيرة عند أطراف التسمية، وكل نتيجة مرشحة للمراجعة لا حكم نهائي.</p></div>
-    <div class="card"><h3 data-lang="en">Alert lifecycle</h3><h3 data-lang="ar">دورة حياة التنبيه</h3><p data-lang="en">Open, investigating, resolved or false positive, with notes, assignee, timeline, bulk triage, one-click allowlisting and consolidation per domain.</p><p data-lang="ar">مفتوح ثم قيد التحقيق ثم مُعالج أو إنذار كاذب، مع ملاحظات ومسؤول وخط زمني وفرز جماعي وإدراج في القائمة الآمنة بنقرة واحدة ودمج التنبيهات لكل نطاق.</p></div>
-    <div class="card"><h3 data-lang="en">Enrichment and exports</h3><h3 data-lang="ar">الإثراء والتصدير</h3><p data-lang="en">DNS-over-HTTPS, crt.sh history, RDAP registration age and URLhaus reputation, then STIX 2.1, CSV, HTML reports and a JSON workspace backup.</p><p data-lang="ar">إثراء عبر DNS over HTTPS وسجل crt.sh وعمر التسجيل من RDAP وسمعة URLhaus، ثم تصدير بصيغ STIX 2.1 وCSV وتقارير HTML ونسخة احتياطية JSON لمساحة العمل.</p></div>
+<section class="showcase is-live" id="feed" aria-labelledby="h-feed">
+  <div class="frame">
+    <h2 id="h-feed" data-reveal><span data-lang="en">The feed, <span data-state>live</span></span><span data-lang="ar">البث <span data-state-ar>مباشر</span></span></h2>
+    <p class="lead" data-reveal style="--d:120ms"><span data-lang="en">The same switch starts the console reading the logs from your browser. Here it runs the relay's latest matches.</span><span data-lang="ar">المفتاح نفسه يُشغّل قراءة السجلات من متصفحك في وحدة التحكم، وهنا يُجري آخر مطابقات المرحّل.</span></p>
+    <div class="ticker" aria-hidden="true"><ul id="tape"></ul></div>
+    <button class="switch" id="feedSwitch" type="button" role="switch" aria-checked="true" data-ui><span class="lab"><span data-lang="en">Tail CT logs</span><span data-lang="ar">تتبّع سجلات الشهادات</span></span><span class="thumb" aria-hidden="true"></span><span class="val"><span data-lang="en" data-val>Live</span><span data-lang="ar" data-val-ar>مباشر</span></span></button>
   </div>
 </section>
 
-<section id="how">
-  <h2 data-lang="en">How it works</h2><h2 data-lang="ar">كيف تعمل</h2>
-  <p class="sub" data-lang="en">Three sources feed one engine. Everything is computed locally, so the console behaves the same on this site and on an analyst's laptop.</p>
-  <p class="sub" data-lang="ar">ثلاثة مصادر تغذي محركاً واحداً، وكل الحسابات تجري محلياً فتتصرف وحدة التحكم على هذا الموقع كما تتصرف على حاسوب المحلل.</p>
-  <div class="steps">
-    <div class="step"><div class="n">01</div><h3 data-lang="en">Discover</h3><h3 data-lang="ar">الاكتشاف</h3><p data-lang="en">Certificates arrive from the logs you tail directly, look-alikes from the hunter and the Watchtower sweep, and anything else from the scanner or the bulk scanner.</p><p data-lang="ar">تصل الشهادات من السجلات التي تقرؤها مباشرة، وتأتي النطاقات المشابهة من الصائد ومسح برج المراقبة، ويمكن لصق أي نطاق آخر في الفاحص أو الفاحص الجماعي.</p></div>
-    <div class="step"><div class="n">02</div><h3 data-lang="en">Detect</h3><h3 data-lang="ar">الكشف</h3><p data-lang="en">The engine parses the registrable domain, folds confusables and leetspeak, normalises Arabic, checks 34 brand profiles and 94 keywords, scores lures, risky TLDs, structure and hosting platforms, then applies your custom rules.</p><p data-lang="ar">يحلل المحرك النطاق القابل للتسجيل ويطوي الأحرف المتشابهة ويوحّد العربية ويفحص 34 علامة و94 كلمة مفتاحية، ثم يقيّم كلمات الإغراء والنطاقات العليا الخطرة والبنية ومنصات الاستضافة ويطبّق قواعدك الخاصة.</p></div>
-    <div class="step"><div class="n">03</div><h3 data-lang="en">Triage</h3><h3 data-lang="ar">الفرز</h3><p data-lang="en">Alerts are enriched with DNS and registration age, consolidated per domain, and worked in a drawer with evidence, diff, notes and timeline. Export STIX or a report when you hand off.</p><p data-lang="ar">تُثرى التنبيهات ببيانات DNS وعمر التسجيل وتُدمج لكل نطاق وتُعالج في لوحة جانبية تضم الأدلة والمقارنة والملاحظات والخط الزمني، ثم تُصدَّر بصيغة STIX أو كتقرير عند التسليم.</p></div>
+<section class="brands" id="brands" aria-labelledby="h-brands">
+  <div class="bg" aria-hidden="true"><img class="city" src="assets/doha-dhow-harbour-skyline-view-at-night.jpg" width="1920" height="1177" loading="lazy" decoding="async" alt=""><div class="scrim"></div></div>
+  <div class="frame">
+    <div class="lay">
+      <h2 id="h-brands" data-reveal><span data-lang="en">Thirty-four names under watch</span><span data-lang="ar">أربعة وثلاثون اسماً تحت المراقبة</span></h2>
+      <div class="sheet top bottom">
+        <p class="shh"><span data-lang="en">The watch list</span><span data-lang="ar">قائمة المراقبة</span></p>
+        <p class="note"><span data-lang="en">Each name with its official domain and its Arabic name, as the engine knows them.</span><span data-lang="ar">كل اسم مع نطاقه الرسمي واسمه العربي كما يعرفها المحرك.</span></p>
+        <ul>
+        <li class="group">
+          <h3><span data-lang="en">Banking</span><span data-lang="ar">المصارف</span></h3>
+          <ul>
+            <li><span class="n">Qatar National Bank</span><span class="d" dir="ltr">qnb.com</span><span class="a" lang="ar">بنك قطر الوطني</span></li>
+            <li><span class="n">Commercial Bank of Qatar</span><span class="d" dir="ltr">cbq.qa</span><span class="a" lang="ar">البنك التجاري</span></li>
+            <li><span class="n">Doha Bank</span><span class="d" dir="ltr">dohabank.com</span><span class="a" lang="ar">بنك الدوحة</span></li>
+            <li><span class="n">Qatar Islamic Bank</span><span class="d" dir="ltr">qib.com.qa</span><span class="a" lang="ar">مصرف قطر الإسلامي</span></li>
+            <li><span class="n">Masraf Al Rayan</span><span class="d" dir="ltr">alrayan.com</span><span class="a" lang="ar">مصرف الريان</span></li>
+            <li><span class="n">Dukhan Bank</span><span class="d" dir="ltr">dukhanbank.com</span><span class="a" lang="ar">بنك دخان</span></li>
+            <li><span class="n">Ahlibank Qatar</span><span class="d" dir="ltr">ahlibank.com.qa</span><span class="a" lang="ar">البنك الأهلي</span></li>
+            <li><span class="n">Qatar International Islamic Bank</span><span class="d" dir="ltr">qiib.com.qa</span><span class="a" lang="ar">الدولي الإسلامي</span></li>
+            <li><span class="n">Qatar Development Bank</span><span class="d" dir="ltr">qdb.qa</span><span class="a" lang="ar">بنك قطر للتنمية</span></li>
+            <li><span class="n">Qatar Central Bank</span><span class="d" dir="ltr">qcb.gov.qa</span><span class="a" lang="ar">مصرف قطر المركزي</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Payments</span><span data-lang="ar">الدفع</span></h3>
+          <ul>
+            <li><span class="n">Himyan card scheme and NAPS switch</span><span class="d" dir="ltr"><span data-lang="en">keywords only</span><span data-lang="ar">كلمات فقط</span></span><span class="a" lang="ar">حميان</span></li>
+            <li><span class="n">Sadad Qatar</span><span class="d" dir="ltr">sadad.qa</span><span class="a" lang="ar">سداد</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Finance</span><span data-lang="ar">المال</span></h3>
+          <ul>
+            <li><span class="n">Qatar Financial Centre</span><span class="d" dir="ltr">qfc.qa</span><span class="a" lang="ar">مركز قطر للمال</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Telecom</span><span data-lang="ar">الاتصالات</span></h3>
+          <ul>
+            <li><span class="n">Ooredoo Qatar</span><span class="d" dir="ltr">ooredoo.qa</span><span class="a" lang="ar">أوريدو</span></li>
+            <li><span class="n">Vodafone Qatar</span><span class="d" dir="ltr">vodafone.qa</span><span class="a" lang="ar">فودافون قطر</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Government and public services</span><span data-lang="ar">الحكومة والخدمات العامة</span></h3>
+          <ul>
+            <li><span class="n">Hukoomi</span><span class="d" dir="ltr">hukoomi.gov.qa</span><span class="a" lang="ar">حكومي</span></li>
+            <li><span class="n">Ministry of Interior Qatar (MOI) and Metrash</span><span class="d" dir="ltr">moi.gov.qa</span><span class="a" lang="ar">وزارة الداخلية</span></li>
+            <li><span class="n">National Cyber Security Agency (NCSA) and Q-CERT</span><span class="d" dir="ltr">ncsa.gov.qa</span><span class="a" lang="ar">الوكالة الوطنية للأمن السيبراني</span></li>
+            <li><span class="n">Ministry of Public Health</span><span class="d" dir="ltr">moph.gov.qa</span><span class="a" lang="ar">وزارة الصحة</span></li>
+            <li><span class="n">Ministry of Communications and Information Technology</span><span class="d" dir="ltr">mcit.gov.qa</span><span class="a" lang="ar">وزارة الاتصالات</span></li>
+            <li><span class="n">Ministry of Commerce and Industry</span><span class="d" dir="ltr">moci.gov.qa</span><span class="a" lang="ar">وزارة التجارة</span></li>
+            <li><span class="n">Ashghal</span><span class="d" dir="ltr">ashghal.gov.qa</span><span class="a" lang="ar">أشغال</span></li>
+            <li><span class="n">Qatar Post</span><span class="d" dir="ltr">qpost.qa</span><span class="a" lang="ar">بريد قطر</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Health</span><span data-lang="ar">الصحة</span></h3>
+          <ul>
+            <li><span class="n">Hamad Medical Corporation</span><span class="d" dir="ltr">hamad.qa</span><span class="a" lang="ar">مؤسسة حمد الطبية</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Energy and utilities</span><span data-lang="ar">الطاقة والمرافق</span></h3>
+          <ul>
+            <li><span class="n">Kahramaa</span><span class="d" dir="ltr">km.qa</span><span class="a" lang="ar">كهرماء</span></li>
+            <li><span class="n">QatarEnergy</span><span class="d" dir="ltr">qatarenergy.qa</span><span class="a" lang="ar">قطر للطاقة</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Aviation</span><span data-lang="ar">الطيران</span></h3>
+          <ul>
+            <li><span class="n">Qatar Airways</span><span class="d" dir="ltr">qatarairways.com</span><span class="a" lang="ar">القطرية</span></li>
+            <li><span class="n">Hamad International Airport</span><span class="d" dir="ltr">dohahamadairport.com</span><span class="a" lang="ar">مطار حمد الدولي</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Charity</span><span data-lang="ar">العمل الخيري</span></h3>
+          <ul>
+            <li><span class="n">Qatar Charity</span><span class="d" dir="ltr">qcharity.org</span><span class="a" lang="ar">قطر الخيرية</span></li>
+            <li><span class="n">Qatar Red Crescent Society</span><span class="d" dir="ltr">qrcs.org.qa</span><span class="a" lang="ar">الهلال الأحمر القطري</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Commerce</span><span data-lang="ar">التجارة</span></h3>
+          <ul>
+            <li><span class="n">Snoonu</span><span class="d" dir="ltr">snoonu.com</span><span class="a" lang="ar">سنونو</span></li>
+            <li><span class="n">Talabat Qatar</span><span class="d" dir="ltr">talabat.com</span><span class="a" lang="ar">طلبات</span></li>
+          </ul>
+        </li>
+        <li class="group">
+          <h3><span data-lang="en">Education</span><span data-lang="ar">التعليم</span></h3>
+          <ul>
+            <li><span class="n">Qatar University</span><span class="d" dir="ltr">qu.edu.qa</span><span class="a" lang="ar">جامعة قطر</span></li>
+            <li><span class="n">Qatar Foundation</span><span class="d" dir="ltr">qf.org.qa</span><span class="a" lang="ar">مؤسسة قطر</span></li>
+          </ul>
+        </li>
+        </ul>
+        <p class="close"><span data-lang="en">Brand names identify what the tool protects and remain their owners'.<br>Add your own under brands in config.yaml.</span><span data-lang="ar">أسماء العلامات تعرّف ما تحميه الأداة وتبقى ملكاً لأصحابها.<br>أضف أسماءك تحت brands في config.yaml.</span></p>
+      </div>
+      <p class="credit" data-reveal style="--d:200ms"><span data-lang="en">West Bay at night from the dhow harbour. Photograph by Zairon, CC BY 4.0, via Wikimedia Commons.</span><span data-lang="ar">الخليج الغربي ليلاً من مرسى المراكب، تصوير Zairon برخصة CC BY 4.0 عبر ويكيميديا كومنز.</span></p>
+    </div>
   </div>
 </section>
 
-<section id="screens">
-  <h2 data-lang="en">Inside the console</h2><h2 data-lang="ar">داخل وحدة التحكم</h2>
-  <div class="shots">
-    <figure><img src="docs/screenshots/03-certstream.png" alt="Certificate Transparency live feed"><figcaption data-lang="en">Certificate Transparency live feed with per-log coverage</figcaption><figcaption data-lang="ar">البث المباشر لسجلات الشهادات مع نسبة التغطية لكل سجل</figcaption></figure>
-    <figure><img src="docs/screenshots/04-scanner.png" alt="Domain scanner verdict"><figcaption data-lang="en">Domain scanner: risk gauge, indicators, look-alike diff</figcaption><figcaption data-lang="ar">فاحص النطاقات مع مقياس الخطر والمؤشرات والمقارنة البصرية</figcaption></figure>
-    <figure><img src="docs/screenshots/06-alerts.png" alt="Alerts triage"><figcaption data-lang="en">Alert triage with bulk actions and STIX export</figcaption><figcaption data-lang="ar">فرز التنبيهات مع إجراءات جماعية وتصدير STIX</figcaption></figure>
-    <figure><img src="docs/screenshots/05-brands.png" alt="Brand monitor"><figcaption data-lang="en">34 protected Qatari brands with Arabic aliases</figcaption><figcaption data-lang="ar">34 علامة قطرية محمية مع أسمائها العربية</figcaption></figure>
+<section class="about" id="qatar" aria-labelledby="h-about">
+  <div class="frame">
+    <div class="sheet top bottom">
+      <h2 id="h-about" data-reveal><span data-lang="en">Built for Qatar's institutions</span><span data-lang="ar">مبنيّ لمؤسسات قطر</span></h2>
+      <p class="story"><span data-lang="en"><b>QACyberWatch</b> is independent and open. It is not an official product of any Qatari authority, and it says so. What it offers Qatar's institutions is evidence: a national-scale feed of candidate impersonation infrastructure that <mark>NCSA</mark>, <mark>Q-CERT</mark> and sector CERTs can audit and extend; monitoring of a public attack surface and structured records that support the security monitoring, incident management and third-party risk activities of the <mark>NIA standard</mark>; and the early detection of phishing infrastructure against banks and payment services, including Himyan and NAPS, that <mark>Qatar Central Bank</mark> expects of licensed institutions. Everything is <mark>MIT licensed</mark>, <mark>455 tests</mark> run on every change, and the Python and JavaScript engines are checked for identical verdicts. Findings are candidates for review that belong with the brand owner and with NCSA before anyone publishes them. <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/docs/qatar-alignment.md"><mark class="deep">Read how it maps to Qatar's frameworks.</mark></a></span><span data-lang="ar"><b>QACyberWatch</b> أداة مستقلة ومفتوحة المصدر وليست منتجاً رسمياً لأي جهة قطرية وتقول ذلك بوضوح، وما تقدمه لمؤسسات قطر هو الدليل، أي بث على نطاق وطني لبنية انتحال محتملة تستطيع <mark>الوكالة الوطنية للأمن السيبراني</mark> و<mark>Q-CERT</mark> وفرق الاستجابة القطاعية مراجعته وتوسيعه، ومراقبة لسطح هجوم عام وسجلات منظمة تدعم أنشطة المراقبة الأمنية وإدارة الحوادث ومخاطر الأطراف الثالثة في <mark>معيار NIA</mark>، وكشفاً مبكراً لبنية التصيد ضد البنوك وخدمات الدفع ومنها حميان وNAPS كما يتوقع <mark>مصرف قطر المركزي</mark> من المؤسسات المرخّصة. كل شيء <mark>برخصة MIT</mark> ويعمل <mark>455 اختباراً</mark> عند كل تغيير ويُفحص محركا Python وJavaScript للتأكد من تطابق أحكامهما، والنتائج مرشّحة للمراجعة ومكانها عند صاحب العلامة وعند الوكالة الوطنية للأمن السيبراني قبل أن ينشرها أحد. <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/docs/qatar-alignment.md"><mark class="deep">اقرأ كيف تتوافق الأداة مع أطر قطر.</mark></a></span></p>
+    </div>
   </div>
 </section>
 
-<section id="selfhost">
-  <h2 data-lang="en">Self-host the backend</h2><h2 data-lang="ar">استضافة الخلفية ذاتياً</h2>
-  <p class="sub" data-lang="en">The browser console needs no server. For monitoring around the clock, notifications to Slack, Teams, Telegram, e-mail or syslog, and a REST API with OpenAPI documentation, run the Python backend.</p>
-  <p class="sub" data-lang="ar">لا تحتاج وحدة التحكم في المتصفح إلى خادم، أما المراقبة على مدار الساعة والتنبيهات عبر Slack وTeams وTelegram والبريد وsyslog والواجهة البرمجية الموثقة بـ OpenAPI فتتطلب تشغيل الخلفية المكتوبة بلغة Python.</p>
-<pre><code># clone and install
-git clone https://github.com/SiteQ8/QACyberWatch.git
-cd QACyberWatch &amp;&amp; pip install -r requirements.txt
-
-# score a domain
-python main.py scan qnb-secure-login.xyz
-
-# tail CT logs directly (no third party)
-python main.py monitor
-
-# proactive typosquat watcher, API and dashboard
-python main.py watch-squats
-python main.py api            # http://localhost:5000
-
-# or everything at once
-docker compose up -d</code></pre>
-  <div class="specs">
-    <div class="spec"><b><span data-lang="en">Engine</span><span data-lang="ar">المحرك</span></b><span><span data-lang="en">Python 3.10+, dependency-free X.509 parser, SQLite with migrations</span><span data-lang="ar">Python 3.10 فما فوق مع محلل X.509 بلا اعتماديات وقاعدة SQLite مع ترحيلات</span></span></div>
-    <div class="spec"><b><span data-lang="en">CT sources</span><span data-lang="ar">مصادر السجلات</span></b><span><span data-lang="en">RFC 6962 and Static CT API logs discovered from Google's log list, every shard that new certificates can land in</span><span data-lang="ar">سجلات RFC 6962 وStatic CT API المكتشفة من قائمة سجلات Google، مع متابعة كل الأجزاء التي قد تصل إليها الشهادات الجديدة</span></span></div>
-    <div class="spec"><b><span data-lang="en">Intel</span><span data-lang="ar">الاستخبارات</span></b><span><span data-lang="en">OpenPhish and URLhaus out of the box; VirusTotal, URLScan, PhishTank and Google Safe Browsing with a key</span><span data-lang="ar">OpenPhish وURLhaus جاهزان فوراً، ويعمل VirusTotal وURLScan وPhishTank وGoogle Safe Browsing بمفتاح</span></span></div>
-    <div class="spec"><b><span data-lang="en">Outputs</span><span data-lang="ar">المخرجات</span></b><span><span data-lang="en">STIX 2.1, CSV, Markdown and JSON reports, Prometheus metrics, syslog and CEF</span><span data-lang="ar">STIX 2.1 وCSV وتقارير Markdown وJSON ومقاييس Prometheus وsyslog وCEF</span></span></div>
-    <div class="spec"><b><span data-lang="en">API</span><span data-lang="ar">الواجهة البرمجية</span></b><span><span data-lang="en">Signed bearer tokens, roles, rate limiting, OpenAPI at <code>/api/v1/docs</code></span><span data-lang="ar">رموز موقّعة وأدوار وتحديد للمعدل وتوثيق OpenAPI على <code>/api/v1/docs</code></span></span></div>
-    <div class="spec"><b><span data-lang="en">License</span><span data-lang="ar">الرخصة</span></b><span><span data-lang="en">MIT, built by Ali AlEnezi (SiteQ8)</span><span data-lang="ar">MIT من تطوير علي العنزي (SiteQ8)</span></span></div>
+<a class="cta" id="open" href="demo/" aria-label="Open the console">
+  <div class="frame">
+    <div class="top">
+      <p><span data-lang="en">The console tails the logs from your browser and keeps everything on your device, with no account.</span><span data-lang="ar">تقرأ وحدة التحكم السجلات من متصفحك وتُبقي كل شيء على جهازك من غير حساب.</span></p>
+      <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><path d="M12 36L36 12M16 12h20v20" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/></svg>
+    </div>
+    <div class="word" aria-hidden="true"><span data-lang="en">Open</span><span data-lang="ar">افتح</span></div>
   </div>
-</section>
-
-<section id="legal">
-  <div class="notice">
-    <strong data-lang="en">Important notice.</strong><strong data-lang="ar">تنبيه مهم</strong>
-    <span data-lang="en"> QACyberWatch produces automated heuristic findings from public data. A flagged domain is a candidate for review, not an accusation, and legitimate services will appear among the results. Verify independently before blocking, reporting or attributing. Brand names are used for identification only and remain the property of their owners. The software, site and published feed are provided as is, without warranty or liability. The console stores data only in your browser; this site sets no cookies and runs no analytics. Read the full <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">disclaimer and terms of use</a>.</span>
-    <span data-lang="ar"> يُنتج QACyberWatch نتائج استدلالية آلية من بيانات عامة، فالنطاق المرصود مرشح للمراجعة وليس اتهاماً، وستظهر خدمات مشروعة بين النتائج، لذا تحقق بنفسك قبل الحظر أو الإبلاغ أو النسب، وتُستخدم أسماء العلامات للتعريف فقط وتبقى ملكاً لأصحابها، ويُقدَّم البرنامج والموقع والبث المنشور كما هي من غير ضمان أو مسؤولية، وتخزن وحدة التحكم بياناتها في متصفحك فقط ولا يضع هذا الموقع ملفات تعريف ولا يشغّل أي تحليلات، <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">واقرأ إخلاء المسؤولية وشروط الاستخدام كاملة</a>.</span>
-  </div>
-</section>
+</a>
 </main>
-<footer>© Ali AlEnezi (SiteQ8) · QACyberWatch is MIT licensed · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">Disclaimer</a> · <a href="demo/">Console</a> · <a href="https://github.com/SiteQ8/QACyberWatch">GitHub</a> · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/CHANGELOG.md">Changelog</a> · <a href="https://github.com/SiteQ8/QACyberWatch/blob/main/SECURITY.md">Security policy</a></footer>
+
+<footer>
+  <div class="frame">
+    <div class="notes">
+      <p><span data-lang="en">QACyberWatch is MIT licensed, built and maintained by Ali AlEnezi (SiteQ8). It is an independent project and is not affiliated with any of the organisations it protects.</span><span data-lang="ar">QACyberWatch برخصة MIT من تطوير علي العنزي (SiteQ8)، وهو مشروع مستقل لا يتبع أياً من الجهات التي يحميها.</span></p>
+      <p><span data-lang="en">Findings are automated heuristics from public data. Verify before blocking, reporting or attributing, and read the <a class="link" href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">disclaimer and terms of use</a>.</span><span data-lang="ar">النتائج استدلالات آلية من بيانات عامة، فتحقق قبل الحظر أو الإبلاغ أو النسب واقرأ <a class="link" href="https://github.com/SiteQ8/QACyberWatch/blob/main/DISCLAIMER.md">إخلاء المسؤولية وشروط الاستخدام</a>.</span></p>
+      <a class="top link" href="#register"><span data-lang="en">Back to the top</span><span data-lang="ar">العودة إلى الأعلى</span></a>
+    </div>
+    <div class="contact">
+      <a href="https://github.com/SiteQ8/QACyberWatch">github.com/SiteQ8</a>
+    </div>
+    <div class="meta">
+      <div class="links"><a href="https://github.com/SiteQ8/QACyberWatch/blob/main/CHANGELOG.md"><span data-lang="en">Changelog</span><span data-lang="ar">سجل التغييرات</span></a><a href="https://github.com/SiteQ8/QACyberWatch/blob/main/SECURITY.md"><span data-lang="en">Security policy</span><span data-lang="ar">سياسة الأمان</span></a><a href="demo/feed/latest.json"><span data-lang="en">Relay feed</span><span data-lang="ar">بث المرحّل</span></a></div>
+      <div><span data-lang="en">Photographs by Mohamod Fasil (CC BY 2.0) and Zairon (CC BY 4.0), via Wikimedia Commons</span><span data-lang="ar">الصور لـ Mohamod Fasil (CC BY 2.0) وZairon (CC BY 4.0) عبر ويكيميديا كومنز</span></div>
+      <div class="year">2026</div>
+    </div>
+  </div>
+</footer>
+
 <script>
-(function(){var h=document.documentElement,en=document.getElementById('btnEn'),ar=document.getElementById('btnAr');function set(l){var rtl=l==='ar';h.setAttribute('dir',rtl?'rtl':'ltr');h.setAttribute('lang',l);en.classList.toggle('on',!rtl);ar.classList.toggle('on',rtl);try{localStorage.setItem('qcw-lang',l)}catch(e){}}en.onclick=function(){set('en')};ar.onclick=function(){set('ar')};var saved=null;try{saved=localStorage.getItem('qcw-lang')}catch(e){}if(saved==='ar'||(!saved&&/^ar\b/.test(navigator.language||'')))set('ar');})();
+document.documentElement.classList.add('js');
+(function () {
+  var h = document.documentElement, en = document.getElementById('btnEn'), ar = document.getElementById('btnAr');
+  function set(l) {
+    var rtl = l === 'ar';
+    h.setAttribute('dir', rtl ? 'rtl' : 'ltr'); h.setAttribute('lang', l);
+    en.setAttribute('aria-pressed', String(!rtl)); ar.setAttribute('aria-pressed', String(rtl));
+    document.title = rtl ? 'QACyberWatch، سجل الشهادات الصادرة لأسماء قطر' : "QACyberWatch, the register of certificates issued for Qatar's names";
+    try { localStorage.setItem('qcw-lang', l); } catch (e) {}
+  }
+  en.onclick = function () { set('en'); }; ar.onclick = function () { set('ar'); };
+  var saved = null; try { saved = localStorage.getItem('qcw-lang'); } catch (e) {}
+  if (saved === 'ar' || (!saved && /^ar\b/.test(navigator.language || ''))) set('ar');
+})();
+</script>
+<script>
+(function () {
+  var LV = { clean: ['clean', 'نظيف'], low: ['low', 'منخفض'], medium: ['medium', 'متوسط'], high: ['high', 'مرتفع'], critical: ['critical', 'حرج'] };
+  var AR_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  var AR_MONTHS = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+  var EN_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  function num(n) { return Number(n || 0).toLocaleString('en-US'); }
+  function setAll(sel, html) { document.querySelectorAll(sel).forEach(function (el) { el.innerHTML = html; }); }
+  function dohaParts(iso) {
+    var d = new Date(iso); if (isNaN(d)) return null;
+    var t = new Date(d.getTime() + 3 * 3600 * 1000);
+    return { day: t.getUTCDay(), date: t.getUTCDate(), month: t.getUTCMonth(), year: t.getUTCFullYear(), hh: ('0' + t.getUTCHours()).slice(-2), mm: ('0' + t.getUTCMinutes()).slice(-2) };
+  }
+  function row(m, i) {
+    var p = dohaParts(m.ts), lv = LV[m.level] || LV.clean;
+    return '<li class="row lv-' + esc(m.level) + '" style="--i:' + i + '"><span class="t">' + (p ? p.hh + ':' + p.mm : '') + '</span><span class="h" dir="ltr">' + esc(m.domain) + '</span><span class="k" dir="ltr">' + esc((m.keywords || []).join(', ')) + '</span><span class="l">' + esc(m.log) + '</span><span class="i">' + esc(m.issuer) + '</span><span class="v"><span data-lang="en">' + lv[0] + '</span><span data-lang="ar">' + lv[1] + '</span></span></li>';
+  }
+  function fillTape(matches) {
+    var items = matches.slice(0, 40).map(function (m) { return '<li><b>' + esc((LV[m.level] || LV.clean)[0]) + '</b><span>' + esc(m.domain) + '</span></li>'; }).join('');
+    var tape = document.getElementById('tape'); if (tape) tape.innerHTML = items + items;
+  }
+  var reg = document.getElementById('latest');
+  // the static rows are the starting state; live rows replace them
+  var staticRows = Array.prototype.slice.call(document.querySelectorAll('#rows .row'));
+  staticRows.forEach(function (r, i) { r.style.setProperty('--i', i); });
+  fetch('demo/feed/latest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || !d.matches) return;
+    var list = d.matches.slice().sort(function (a, b) { return (b.ts || '').localeCompare(a.ts || ''); });
+    document.getElementById('rows').innerHTML = list.slice(0, 8).map(row).join('');
+    fillTape(list);
+    var logs = (d.logs || []).length; if (logs) setAll('[data-logs]', num(logs));
+    var p = dohaParts(d.generated_at);
+    if (p) {
+      setAll('[data-date-en]', EN_DAYS[p.day] + ' ' + p.date + ' ' + EN_MONTHS[p.month] + ' ' + p.year);
+      setAll('[data-date-ar]', AR_DAYS[p.day] + ' ' + p.date + ' ' + AR_MONTHS[p.month] + ' ' + p.year);
+    }
+    var mins = Math.round((d.window_seconds || 0) / 60);
+    setAll('[data-run-en]', '<span class="num">' + num(d.entries) + '</span> certificates read in <span class="num">' + num(mins) + '</span> minutes, <span class="num">' + num(list.length) + '</span> matched');
+    setAll('[data-run-ar]', 'قُرئت <span class="num">' + num(d.entries) + '</span> شهادة في <span class="num">' + num(mins) + '</span> دقيقة وطابقت منها <span class="num">' + num(list.length) + '</span>');
+    if (reg) reg.classList.add('is-in');
+  }).catch(function () { if (reg) reg.classList.add('is-in'); });
+  // the fortnight's figure and its series
+  var series = document.getElementById('series');
+  var fallbackDays = [{"date":"2026-10-16","matches":269},{"date":"2026-10-17","matches":404},{"date":"2026-10-18","matches":350},{"date":"2026-10-19","matches":193},{"date":"2026-10-20","matches":277},{"date":"2026-10-21","matches":236},{"date":"2026-10-22","matches":300},{"date":"2026-10-23","matches":194},{"date":"2026-10-24","matches":306},{"date":"2026-10-25","matches":282},{"date":"2026-10-26","matches":226},{"date":"2026-10-27","matches":250},{"date":"2026-10-28","matches":148},{"date":"2026-10-29","matches":135},{"date":"2026-10-30","matches":43}];
+  function drawSeries(days) {
+    if (!series) return;
+    var max = Math.max.apply(null, days.map(function (d) { return d.matches; }).concat([1]));
+    series.innerHTML = days.map(function (d, i) { return '<i style="--i:' + i + ';height:' + Math.max(4, Math.round(100 * d.matches / max)) + '%" title="' + esc(d.date) + ': ' + d.matches + '"' + (i === days.length - 1 ? ' class="today"' : '') + '></i>'; }).join('');
+  }
+  drawSeries(fallbackDays);
+  fetch('demo/feed/summary.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (s) {
+    if (!s || !s.matches) return;
+    setAll('[data-matches]', num(s.matches)); setAll('[data-medium]', num(s.medium_or_above));
+    if (s.days_series && s.days_series.length) { drawSeries(s.days_series); setAll('[data-issue]', num(s.days_series.length)); }
+    if (s.window && s.window.from && s.window.to) {
+      var a = s.window.from.split('-'), b = s.window.to.split('-');
+      var monA = EN_MONTHS[+a[1] - 1], monB = EN_MONTHS[+b[1] - 1];
+      setAll('[data-window-en]', monA === monB ? (+a[2]) + ' and ' + (+b[2]) + ' ' + monB + ' ' + b[0] : (+a[2]) + ' ' + monA + ' and ' + (+b[2]) + ' ' + monB + ' ' + b[0]);
+      var arA = AR_MONTHS[+a[1] - 1], arB = AR_MONTHS[+b[1] - 1];
+      setAll('[data-window-ar]', arA === arB ? (+a[2]) + ' و' + (+b[2]) + ' ' + arB + ' ' + b[0] : (+a[2]) + ' ' + arA + ' و' + (+b[2]) + ' ' + arB + ' ' + b[0]);
+    }
+  }).catch(function () {});
+  // reveals, once
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -8% 0px', threshold: 0 });
+  var watched = Array.prototype.slice.call(document.querySelectorAll('[data-reveal], .stats, .method, .plate, .brands, .register'));
+  watched.forEach(function (el) { io.observe(el); });
+  function sweep() { var H = window.innerHeight; watched = watched.filter(function (el) { if (el.classList.contains('is-in')) return false; var r = el.getBoundingClientRect(); if (r.top < H * 0.96 && r.bottom > 0) { el.classList.add('is-in'); io.unobserve(el); return false; } return true; }); }
+  window.addEventListener('scroll', sweep, { passive: true }); window.addEventListener('resize', sweep); setTimeout(sweep, 400); setTimeout(sweep, 1500);
+  // the switch
+  var sw = document.getElementById('feedSwitch'), sc = document.getElementById('feed');
+  if (sw) sw.addEventListener('click', function () {
+    var live = sc.classList.toggle('is-live');
+    sw.setAttribute('aria-checked', String(live));
+    setAll('[data-state]', live ? 'live' : 'paused'); setAll('[data-state-ar]', live ? 'مباشر' : 'متوقف');
+    setAll('[data-val]', live ? 'Live' : 'Paused'); setAll('[data-val-ar]', live ? 'مباشر' : 'متوقف');
+  });
+  // the panel's notes point at its parts
+  document.querySelectorAll('.features .note').forEach(function (n) {
+    var id = n.getAttribute('data-for');
+    function hot(on) { document.querySelectorAll('.panel [data-part="' + id + '"]').forEach(function (p) { p.classList.toggle('is-hot', on); }); }
+    n.addEventListener('mouseenter', function () { hot(true); }); n.addEventListener('mouseleave', function () { hot(false); });
+    n.addEventListener('click', function () { hot(true); setTimeout(function () { hot(false); }, 1600); });
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = b.getAttribute('data-copy'), old = b.textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = old; }, 1400); }, function () { prompt('Copy the indicator', t); });
+    });
+  });
+  // the lookup: the real engine, loaded when first needed
+  var form = document.getElementById('lookup'), q = document.getElementById('q'), out = document.getElementById('verdict'), engine = null, loading = null;
+  function script(src) { return new Promise(function (res, rej) { var s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+  function loadEngine() {
+    if (engine) return Promise.resolve(engine);
+    if (!loading) loading = script('demo/engine-data.js').then(function () { return script('demo/engine.js'); }).then(function () { engine = window.QCW.createEngine({}); return engine; });
+    return loading;
+  }
+  q.addEventListener('focus', function () { loadEngine().catch(function () {}); }, { once: true });
+  function isAr() { return document.documentElement.getAttribute('dir') === 'rtl'; }
+  function tr(en, ar) { return '<span data-lang="en">' + en + '</span><span data-lang="ar">' + ar + '</span>'; }
+  function diffHtml(target, cand) {
+    // mark what the candidate adds beside the official name's letters, left to right
+    var tl = target.replace(/\.[^.]+$/, ''), ts = target.slice(tl.length), cl = cand.replace(/\.[^.]+$/, ''), cs = cand.slice(cl.length);
+    var i = cl.indexOf(tl);
+    var lab = i >= 0 ? (cl.slice(0, i) ? '<mark>' + esc(cl.slice(0, i)) + '</mark>' : '') + esc(tl) + (cl.slice(i + tl.length) ? '<mark>' + esc(cl.slice(i + tl.length)) + '</mark>' : '') : '<mark>' + esc(cl) + '</mark>';
+    var suf = cs === ts ? esc(cs) : '<mark>' + esc(cs) + '</mark>';
+    return '<div>' + esc(target) + '</div><div>' + lab + suf + '</div>';
+  }
+  form.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var v = (q.value || '').trim().replace(/^https?:\/\//i, '').replace(/[\/?#].*$/, '');
+    if (!v) { q.focus(); return; }
+    out.className = 'verdict is-on'; out.innerHTML = tr('Reading the engine', 'جارٍ تحميل المحرك');
+    loadEngine().then(function (e) {
+      var r = e.scan(v, {}, 'landing', false), p = r.phishing, lv = LV[p.risk_level] || LV.clean;
+      var inds = (p.indicators || []).slice(0, 6).map(function (x) { return '<li>' + esc(x.detail) + (x.weight ? ' <span class="num">+' + x.weight + '</span>' : '') + '</li>'; }).join('');
+      var brands = (p.matched_brands || []).join(', ');
+      var tgt = (r.domain_squatting && r.domain_squatting[0] && r.domain_squatting[0].target) || (r.brand_alerts && r.brand_alerts[0] && r.brand_alerts[0].evidence && r.brand_alerts[0].evidence.protected_domains && r.brand_alerts[0].evidence.protected_domains[0]);
+      var html = '<div class="head"><span class="dom" dir="ltr">' + esc(r.domain) + '</span><span class="lv">' + tr(lv[0], lv[1]) + ', <span class="num">' + p.risk_score + '</span> ' + tr('of 100', 'من 100') + '</span></div>'
+        + '<div class="bar" aria-hidden="true"><b style="width:' + p.risk_score + '%"></b></div>'
+        + (brands ? '<p>' + tr('Targets ' + esc(brands), 'يستهدف ' + esc(brands)) + '</p>' : '')
+        + (inds ? '<ul>' + inds + '</ul>' : '<p>' + tr('No indicator fired. The name is clean as far as the engine can tell.', 'لم يُطلق أي مؤشر، فالاسم نظيف بقدر ما يستطيع المحرك أن يحكم.') + '</p>')
+        + (tgt ? '<div class="diff">' + diffHtml(tgt, r.domain) + '</div>' : '')
+        + '<div class="next"><a class="btn inverse" href="demo/#scan=' + encodeURIComponent(r.domain) + '">' + tr('Open in the console', 'افتح في وحدة التحكم') + '</a><span>' + tr('An automated heuristic from public data, a candidate for review.', 'استدلال آلي من بيانات عامة يستحق المراجعة.') + '</span></div>';
+      out.innerHTML = html;
+      requestAnimationFrame(function () { var b = out.querySelector('.bar b'); if (b) b.style.width = p.risk_score + '%'; });
+    }).catch(function () {
+      out.innerHTML = tr('The engine could not load here. <a class="link" href="demo/#page=scanner">Open the console\'s scanner</a> instead.', 'تعذّر تحميل المحرك هنا، <a class="link" href="demo/#page=scanner">فافتح فاحص وحدة التحكم</a> بدلاً من ذلك.');
+    });
+  });
+})();
 </script>
 </body>
 </html>
