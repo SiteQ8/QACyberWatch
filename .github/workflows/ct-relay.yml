@@ -39,6 +39,9 @@ jobs:
       - name: Tail CT logs and build the relay feed
         run: python scripts/ct_snapshot.py --seconds "${{ github.event.inputs.seconds || '1500' }}" --out demo/feed
 
+      - name: Summarise the archive for the landing page
+        run: python scripts/feed_summary.py --feed demo/feed
+
       - name: Publish
         run: |
           git config user.name "Ali AlEnezi"
