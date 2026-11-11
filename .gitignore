@@ -52,9 +52,5 @@ Thumbs.db
 # Local tool folders stay out of the repository
 .*/
 !.github/
-!.impeccable/
-!.taste-skill/
-skills-lock.json
-.impeccable/review/
-.impeccable/questions/
-.taste-skill/inspect/
+*-lock.json
+!package-lock.json

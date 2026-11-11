@@ -1,7 +1,5 @@
 # QACyberWatch landing page, design record
 
-<!-- impeccable:design-schema 1 -->
-
 Scope: `index.html`, the public page at https://qacyberwatch.3li.info/. The console in `demo/` keeps its own interface and is not covered here.
 
 ## Thesis
