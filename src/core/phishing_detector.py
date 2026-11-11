@@ -204,7 +204,7 @@ class PhishingDetector:
         return [self.analyze(d) for d in domains]
 
     def analyze(self, domain: str, additional_context: Optional[Dict] = None) -> PhishingVerdict:
-        """Run comprehensive phishing analysis on a hostname or URL."""
+        """Run phishing analysis on a hostname or URL."""
         self.detection_count += 1
         parsed = parse_domain(domain)
         context = additional_context or {}

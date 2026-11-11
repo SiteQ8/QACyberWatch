@@ -1,5 +1,5 @@
 /*
- * QACyberWatch discovery — no third-party feed required.
+ * QACyberWatch discovery: no third-party feed required.
  *
  *  1. Direct Certificate Transparency tailing: the browser polls public CT logs
  *     itself (RFC 6962 get-sth / get-entries), parses every DER certificate with
@@ -9,7 +9,7 @@
  *
  *  2. Watchtower: a scheduled brand sweep that generates look-alike domains for
  *     the protected brands and resolves them over DNS-over-HTTPS, recording live
- *     ones as sightings and raising alerts — proactive discovery without waiting
+ *     ones as sightings and raising alerts, proactive discovery without waiting
  *     for a certificate to appear.
  */
 (function () {
