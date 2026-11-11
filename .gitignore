@@ -49,8 +49,11 @@ docker-compose.override.yml
 Thumbs.db
 .DS_Store
 
-# Design tooling, local only
-.claude/
+# Local tool folders stay out of the repository
+.*/
+!.github/
+!.impeccable/
+!.taste-skill/
 skills-lock.json
 .impeccable/review/
 .impeccable/questions/
