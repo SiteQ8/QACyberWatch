@@ -2,6 +2,12 @@
 
 All notable changes to QACyberWatch are documented in this file. The format follows Keep a Changelog and the project adheres to Semantic Versioning.
 
+## [Unreleased]
+
+### Security
+- **Placeholder credentials are no longer honoured.** The API used to start with the admin login `admin` / `admin`, the analyst login `analyst` / `analyst` and the token signing key `change-me-in-production`, and only logged a warning, so a deployment left on its defaults accepted a public password and tokens anyone could forge. Now an account whose password is empty or a published placeholder cannot sign in, and a missing or placeholder signing key is replaced by a random key that lasts for one process. `config.yaml` and `docker-compose.yml` ship with no credentials. Set `QCW_ADMIN_PASSWORD`, `QCW_ANALYST_PASSWORD` and `QCW_API_SECRET` to enable the logins and keep tokens across restarts.
+- The relay workflow passes its manual `seconds` input through an environment variable instead of expanding it inside the shell command.
+
 ## [1.0.0] - 2026-10-03
 
 First release. QACyberWatch is the Qatar edition of the open-source Certificate Transparency monitoring engine that powers KWTCyberWatch 2.5.0, rebuilt for the State of Qatar's brands, suffixes, keywords and regulatory context.

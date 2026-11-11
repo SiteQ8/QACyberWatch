@@ -285,13 +285,13 @@ class APIConfig:
     host: str = "0.0.0.0"  # nosec B104 - container friendly default, override in production
     port: int = 5000
     debug: bool = False
-    secret_key: str = "change-me-in-production"
+    secret_key: str = ""  # empty = random key per process, set QCW_API_SECRET
     api_key: str = ""
     rate_limit: str = "100/hour"
     cors_origins: List[str] = field(default_factory=lambda: ["*"])
     auth_required: bool = False
-    admin_password: str = "admin"  # nosec B105 - demo default, override with QCW_ADMIN_PASSWORD
-    analyst_password: str = "analyst"  # nosec B105
+    admin_password: str = ""  # empty = admin login disabled, set QCW_ADMIN_PASSWORD
+    analyst_password: str = ""  # empty = analyst login disabled
     token_ttl_seconds: int = 28800
     max_bulk_domains: int = 100
     enable_metrics: bool = True
@@ -554,18 +554,51 @@ def to_dict(settings: Settings, redact: bool = True) -> Dict[str, Any]:
     return result
 
 
+#: Placeholder values printed in config.yaml, docker-compose.yml and the docs.
+#: They are public, so the API never treats them as real credentials.
+DEMO_SECRETS = frozenset({"", "change-me", "changeme", "change-me-in-production"})
+DEMO_PASSWORDS = frozenset({"admin", "analyst", "password", "change-me", "changeme"})
+
+
+def is_demo_secret(value: Optional[str]) -> bool:
+    """True when ``value`` is empty or one of the published placeholder secrets."""
+    return (value or "").strip().lower() in DEMO_SECRETS
+
+
+def is_demo_password(value: Optional[str]) -> bool:
+    """True when ``value`` is one of the published placeholder passwords."""
+    return (value or "").strip().lower() in DEMO_PASSWORDS
+
+
 def validate(settings: Settings) -> List[str]:
     """Return a list of human-readable warnings about risky or inconsistent settings."""
     warnings: List[str] = []
     api = settings.api
     notif = settings.notifications
 
-    if api.secret_key == "change-me-in-production":
-        warnings.append("api.secret_key is the default value; set QCW_API_SECRET")
-    if api.admin_password == "admin":
-        warnings.append("api.admin_password is the demo default; set QCW_ADMIN_PASSWORD")
-    if api.auth_required and not api.api_key and api.admin_password == "admin":
-        warnings.append("api.auth_required is on but only the demo password protects it")
+    if is_demo_secret(api.secret_key):
+        warnings.append(
+            "api.secret_key is empty or a placeholder; tokens are signed with a random key for this "
+            "process only until QCW_API_SECRET is set"
+        )
+    if not api.admin_password or is_demo_password(api.admin_password):
+        warnings.append(
+            "api.admin_password is empty or a placeholder; the admin login stays disabled until "
+            "QCW_ADMIN_PASSWORD is set"
+        )
+    if api.analyst_password and is_demo_password(api.analyst_password):
+        warnings.append(
+            "api.analyst_password is a placeholder; the analyst login stays disabled until "
+            "QCW_ANALYST_PASSWORD is set"
+        )
+    if (
+        api.auth_required
+        and not api.api_key
+        and (not api.admin_password or is_demo_password(api.admin_password))
+    ):
+        warnings.append(
+            "api.auth_required is on but no admin password or API key is set, so nobody can sign in"
+        )
     if api.debug:
         warnings.append("api.debug is enabled; never expose a debug server publicly")
     if "*" in api.cors_origins and api.auth_required:

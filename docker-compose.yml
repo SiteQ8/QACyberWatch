@@ -8,8 +8,8 @@ services:
       - ./data:/app/data
       - ./config.yaml:/app/config.yaml:ro
     environment:
-      - QCW_API_SECRET=${QCW_API_SECRET:-change-me}
-      - QCW_ADMIN_PASSWORD=${QCW_ADMIN_PASSWORD:-admin}
+      - QCW_API_SECRET=${QCW_API_SECRET:-}
+      - QCW_ADMIN_PASSWORD=${QCW_ADMIN_PASSWORD:-}
       - QCW_API_KEY=${QCW_API_KEY:-}
       - QCW_AUTH_REQUIRED=${QCW_AUTH_REQUIRED:-false}
       - QCW_VT_API_KEY=${QCW_VT_API_KEY:-}

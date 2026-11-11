@@ -517,3 +517,63 @@ def test_lazy_module_app(monkeypatch, tmp_path):
     with pytest.raises(AttributeError):
         module.nothing_here
     assert json.loads(json.dumps({"ok": True}))["ok"]
+
+
+# --------------------------------------------------------------------------- #
+# Published placeholder credentials are never honoured
+# --------------------------------------------------------------------------- #
+
+
+def make_default_app(**api_overrides):
+    settings = Settings()
+    settings.api.rate_limit = "1000/hour"
+    for key, value in api_overrides.items():
+        setattr(settings.api, key, value)
+    app = create_app(settings, db=Database(":memory:"), testing=True, intel_engine=FakeIntel())
+    return app
+
+
+class TestPlaceholderCredentials:
+    @pytest.mark.parametrize(
+        "username,password",
+        [("admin", "admin"), ("analyst", "analyst"), ("admin", ""), ("admin", "Admin")],
+    )
+    def test_default_settings_refuse_placeholder_logins(self, username, password):
+        client = make_default_app().test_client()
+        resp = client.post("/api/v1/auth/login", json={"username": username, "password": password})
+        assert resp.status_code == 401
+
+    @pytest.mark.parametrize("placeholder", ["admin", "password", "change-me", "ADMIN "])
+    def test_placeholder_password_from_config_is_refused(self, placeholder):
+        client = make_default_app(admin_password=placeholder).test_client()
+        resp = client.post(
+            "/api/v1/auth/login", json={"username": "admin", "password": placeholder}
+        )
+        assert resp.status_code == 401
+
+    @pytest.mark.parametrize("secret", ["", "change-me", "change-me-in-production"])
+    def test_token_forged_with_placeholder_secret_is_rejected(self, secret):
+        client = make_default_app(secret_key=secret).test_client()
+        for guess in ("change-me-in-production", "change-me"):
+            forged, _ = TokenAuth(guess).issue("admin", "admin")
+            resp = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {forged}"})
+            assert resp.status_code == 401
+
+    def test_real_credentials_still_work_beside_placeholder_secret(self):
+        client = make_default_app(admin_password="a-real-passphrase").test_client()
+        headers = login(client, "admin", "a-real-passphrase")
+        assert client.get("/api/v1/auth/me", headers=headers).get_json()["role"] == "admin"
+
+    def test_shipped_config_carries_no_credentials(self):
+        import os
+
+        import yaml
+
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        with open(os.path.join(root, "config.yaml"), encoding="utf-8") as fh:
+            api = yaml.safe_load(fh)["api"]
+        assert api["secret_key"] == "" and api["admin_password"] == ""
+        assert api["analyst_password"] == ""
+        with open(os.path.join(root, "docker-compose.yml"), encoding="utf-8") as fh:
+            compose = fh.read()
+        assert ":-admin" not in compose and ":-change-me" not in compose

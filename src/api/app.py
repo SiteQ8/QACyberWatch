@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import logging
 import os
+import secrets
 import time
 from datetime import datetime, timezone
 from functools import wraps
@@ -28,7 +29,14 @@ from src import __version__
 from src.api.auth import Principal, TokenAuth, UserStore, extract_bearer
 from src.api.openapi import SWAGGER_HTML, build_spec
 from src.api.ratelimit import RateLimiter
-from src.config.settings import Settings, load_config, to_dict, validate
+from src.config.settings import (
+    Settings,
+    is_demo_password,
+    is_demo_secret,
+    load_config,
+    to_dict,
+    validate,
+)
 from src.core.engine import build_engines, run_scan
 from src.core.reports import alerts_to_csv, build_summary, render_markdown, render_prometheus
 from src.core.stix_export import TLP_MARKINGS, build_stix_bundle
@@ -736,8 +744,21 @@ def create_app(
         enrich_fn=enrich_fn,
         notifier=notifier,
     )
-    state.auth = TokenAuth(settings.api.secret_key, settings.api.token_ttl_seconds)
-    state.users = UserStore(settings.api.admin_password, settings.api.analyst_password)
+    # The placeholder secret and passwords are printed in the docs, so they are
+    # never honoured: a placeholder secret is replaced by a random key that lives
+    # as long as this process, and an account left on a placeholder password
+    # cannot sign in at all.
+    signing_secret = settings.api.secret_key
+    if is_demo_secret(signing_secret):
+        signing_secret = secrets.token_hex(32)
+    admin_password = settings.api.admin_password
+    if is_demo_password(admin_password):
+        admin_password = ""
+    analyst_password = settings.api.analyst_password
+    if is_demo_password(analyst_password):
+        analyst_password = ""
+    state.auth = TokenAuth(signing_secret, settings.api.token_ttl_seconds)
+    state.users = UserStore(admin_password, analyst_password)
     state.limiter = RateLimiter(settings.api.rate_limit)
     app.extensions["kcw"] = state
     database = state.db
